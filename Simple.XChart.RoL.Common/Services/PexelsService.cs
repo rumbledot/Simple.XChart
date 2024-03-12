@@ -31,9 +31,9 @@ public class PexelsService
         return await pexelClient.SearchPhotosAsync(photoQuery, orientation.ToString(), "small", page: page, pageSize: pageSize);
     }
 
-    public async Task<IEnumerable<BannerImage>> GetBannerImages()
+    public async Task<IEnumerable<BannerImage>> GetBannerImages(string photoTheme)
     {
-        var response = await GetSearchPhoto("Nature");
+        var response = await GetSearchPhoto(photoTheme);
         var bannerImages = new List<BannerImage>();
         var bannerImage = new BannerImage();
         foreach (var image in response.photos)
@@ -46,6 +46,7 @@ public class PexelsService
             bannerImage.ImageUrl = image.url;
             bannerImage.ImageLandscapeUrl = image.source.landscape;
             bannerImage.ImageAlt = image.alt;
+            bannerImage.AverageColor = image.avgColor;
 
             bannerImages.Add(bannerImage);
         }

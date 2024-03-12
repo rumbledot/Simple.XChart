@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Simple.XChart.RoL.Common.Data;
 
@@ -11,9 +12,10 @@ using Simple.XChart.RoL.Common.Data;
 namespace Simple.XChart.RoL.Web.Migrations
 {
     [DbContext(typeof(RoLDBContext))]
-    partial class RoLDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240310054533_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,8 +46,8 @@ namespace Simple.XChart.RoL.Web.Migrations
                         new
                         {
                             InfoKey = "PhotoTheme",
-                            DateUpdated = new DateTime(2024, 3, 12, 6, 10, 18, 151, DateTimeKind.Local).AddTicks(4529),
-                            InfoValue = "natural landscape"
+                            DateUpdated = new DateTime(2024, 3, 10, 18, 45, 33, 864, DateTimeKind.Local).AddTicks(9988),
+                            InfoValue = "christianity"
                         });
                 });
 
@@ -204,8 +206,8 @@ namespace Simple.XChart.RoL.Web.Migrations
                         new
                         {
                             Id = 1,
-                            DateEnd = new DateTime(2024, 7, 10, 6, 10, 18, 151, DateTimeKind.Local).AddTicks(4500),
-                            DateStart = new DateTime(2024, 3, 12, 6, 10, 18, 151, DateTimeKind.Local).AddTicks(4473),
+                            DateEnd = new DateTime(2024, 7, 8, 18, 45, 33, 864, DateTimeKind.Local).AddTicks(9959),
+                            DateStart = new DateTime(2024, 3, 10, 18, 45, 33, 864, DateTimeKind.Local).AddTicks(9933),
                             Description = "Guide thru Easter",
                             Title = "Lent"
                         });
@@ -241,7 +243,8 @@ namespace Simple.XChart.RoL.Web.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -261,9 +264,6 @@ namespace Simple.XChart.RoL.Web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ChartPeriodId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -272,19 +272,17 @@ namespace Simple.XChart.RoL.Web.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("OccurenceId")
+                    b.Property<int>("Occurence")
                         .HasColumnType("int");
 
                     b.Property<int>("PracticeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    b.Property<int>("TaskId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

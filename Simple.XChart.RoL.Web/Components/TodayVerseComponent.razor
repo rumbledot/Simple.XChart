@@ -1,17 +1,17 @@
-﻿<div class="row">
-    <div class="col-md-2 today-date">
+﻿<div class="occurence-row">
+    <div class="today-date">
         <h1>@todaysDate.Day</h1>
         <p>@todaysDate.ToString("MMM")</p>
     </div>
-    <div class="col-md-10 today-verse">
+    <div class="today-verse">
         @if (todaysVerse is null)
         {
             <p>loading...</p>
         }
         else
         {
-            <p>@todaysVerse.verse.details.text</p>
-            <span>@todaysVerse.verse.details.reference (@todaysVerse.verse.details.version)</span>
+            <p>@todaysVerse.Text</p>
+            <span>@todaysVerse.VerseId (@todaysVerse.BibleId)</span>
         }
     </div>
 </div>

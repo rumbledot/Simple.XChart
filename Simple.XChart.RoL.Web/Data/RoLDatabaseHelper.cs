@@ -20,90 +20,90 @@ public class RoLDatabaseHelper : IRoLDatabaseHelper
 
     #region TaskPeriod
 
-    public void SaveTaskPeriods(TaskPeriod taskPeriod)
+    public async Task CreateChartPeriods(ChartPeriod taskPeriod)
     {
-        context.TaskPeriods.Add(taskPeriod);
-        context.SaveChanges();
+        context.ChartPeriods.Add(taskPeriod);
+        await context.SaveChangesAsync();
     }
 
-    public void UpdateTaskPeriod(TaskPeriod taskPeriod)
+    public async Task UpdateChartPeriod(ChartPeriod taskPeriod)
     {
         context.Update(taskPeriod);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public IEnumerable<TaskPeriod> GetTaskPeriods()
+    public async Task<IEnumerable<ChartPeriod>> GetChartPeriods()
     {
-        return context.TaskPeriods.ToList();
+        return context.ChartPeriods.ToList();
     }
-    public async Task<TaskPeriod> GetTaskPeriodAsync(int id)
+    public async Task<ChartPeriod> GetCharteriodAsync(int id)
     {
-        return await context.TaskPeriods.FirstOrDefaultAsync(p => p.Id == id);
+        return await context.ChartPeriods.FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<TaskPeriod> GetActiveTaskPeriodAsync()
+    public async Task<ChartPeriod> GetActiveChartPeriodAsync()
     {
-        return await context.TaskPeriods.FirstOrDefaultAsync(x=>x.DateStart < DateTime.Now && x.DateEnd > DateTime.Now);
+        return await context.ChartPeriods.FirstOrDefaultAsync(x=>x.DateStart < DateTime.Now && x.DateEnd > DateTime.Now);
     }
 
     #endregion TaskPeriod
 
     #region TobeGoal
 
-    public void SaveTobeGoal(TobeGoal goal)
+    public async Task CreateMyGoal(MyGoal goal)
     {
-        context.TobeGoals.Add(goal);
-        context.SaveChanges();
+        context.MyGoals.Add(goal);
+        await context.SaveChangesAsync();
     }
 
-    public void UpdateTobeGoal(TobeGoal goal)
+    public async Task UpdateMyGoal(MyGoal goal)
     {
         context.Update(goal);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public IEnumerable<TobeGoal> GetTaskPeriodTobeGoals(int taskId)
+    public IEnumerable<MyGoal> GetChartPeriodMyGoals(int taskId)
     {
-        return context.TobeGoals.Where( x => x.TaskPeriodId == taskId);
+        return context.MyGoals.Where( x => x.TaskPeriodId == taskId);
     }
 
-    public Task<TobeGoal> GetTobeGoalAsync(int id)
+    public async Task<MyGoal> GetMyGoalAsync(int id)
     {
-        return context.TobeGoals.FirstOrDefaultAsync(x => x.Id == id);
+        return await context.MyGoals.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public void DeleteTobeGoal(int id)
+    public async Task DeleteMyGoal(int id)
     {
-        var existing = context.TobeGoals.FirstOrDefault(x => x.Id == id);
-        context.TobeGoals.Remove(existing);
-        context.SaveChanges();
+        var existing = context.MyGoals.FirstOrDefault(x => x.Id == id);
+        context.MyGoals.Remove(existing);
+        await context.SaveChangesAsync();
     }
 
-    public void DeleteTobeGoal(TobeGoal goal)
+    public async Task DeleteMyGoal(MyGoal goal)
     {
-        context.TobeGoals.Remove(goal);
-        context.SaveChanges();
+        context.MyGoals.Remove(goal);
+        await context.SaveChangesAsync();
     }
 
     #endregion TobeGoal
 
     #region MyPractice
 
-    public void SaveMyPractice(MyPractice myPractice)
+    public async Task CreateMyPractice(MyPractice myPractice)
     {
         context.MyPractices.Add(myPractice);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public void UpdateMyPracticeAsync(MyPractice myPractice)
+    public async Task UpdateMyPracticeAsync(MyPractice myPractice)
     {
         context.Update(myPractice);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public IEnumerable<MyPractice> GetTaskPeriodMyPracticesAsync(int taskId)
+    public IEnumerable<MyPractice> GetChartPeriodMyPracticesAsync(int taskId)
     {
-        var goalIds = context.TobeGoals.Where(x => x.TaskPeriodId == taskId).Select(x => x.Id);
+        var goalIds = context.MyGoals.Where(x => x.TaskPeriodId == taskId).Select(x => x.Id);
 
         return context.MyPractices.Where(x => goalIds.Contains(x.GoalId));
     }
@@ -113,90 +113,189 @@ public class RoLDatabaseHelper : IRoLDatabaseHelper
         return await context.MyPractices.FirstOrDefaultAsync(x => x.Id == practiceId);
     }
 
-    public void DeleteMyPractice(int practiceId)
+    public async Task DeleteMyPractice(int practiceId)
     {
         var existing = context.MyPractices.FirstOrDefault(x => x.Id == practiceId);
         context.MyPractices.Remove(existing);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public void DeleteMyPractice(MyPractice practice)
+    public async Task DeleteMyPractice(MyPractice practice)
     {
         context.Remove(practice);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
+    }
+
+    public async Task SaveMyPracticeDailyReflection(int chartPeriodId, int myPracticeId, int occurenceId, DailyReflection dailyReflection)
+    {
+        if (dailyReflection.Id > 0)
+        {
+            dailyReflection.DateUpdated = DateTime.Now;
+            context.DailyReflrections.Update(dailyReflection);
+            await context.SaveChangesAsync();
+
+            return;
+        }
+        
+        dailyReflection.DateUpdated = DateTime.Now;
+        context.DailyReflrections.Add(dailyReflection);
+        await context.SaveChangesAsync();
+
+        using var conn = new SqlConnection(connectionStrings.DefaultConnection);
+        conn.Open();
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = @"INSERT INTO ChartPeriodMap 
+            (ChartPeriodId, MyPracticeId, OccurenceId, DailyReflectionId) 
+            VALUES 
+            (@chartPeriodId, @myPracticeId, @occurenceId, @dailyReflectionId)";
+        cmd.Parameters.Add(new SqlParameter("@chartPeriodId", chartPeriodId));
+        cmd.Parameters.Add(new SqlParameter("@myPracticeId", myPracticeId));
+        cmd.Parameters.Add(new SqlParameter("@occurenceId", occurenceId));
+        cmd.Parameters.Add(new SqlParameter("@dailyReflectionId", dailyReflection.Id));
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task<IEnumerable<DailyReflection>> GetMyPracticeDailyReflections(int myPracticeId)
+    {
+        using var conn = new SqlConnection(connectionStrings.DefaultConnection);
+        var reflectionIds = await conn.QueryAsync<int>(
+                @"SELECT DailyReflectionId 
+                FROM MyPracticeDailyReflrectionMap 
+                WHERE MyPracticeId=@myPracticeId", new { myPracticeId });
+
+        return context.DailyReflrections
+            .Where(x => reflectionIds.Contains(x.Id))
+            .OrderBy(x => x.DateUpdated)
+            .AsNoTracking();
     }
 
     #endregion MyPractice
 
     #region MyAction
 
-    public void SaveMyActionAsync(MyAction action)
+    public async Task CreateMyActionAsync(MyAction action)
     {
         context.MyActions.Add(action);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public void UpdateMyActionAsync(MyAction action)
+    public async Task UpdateMyActionAsync(MyAction action)
     {
         context.Update(action);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public IEnumerable<MyAction> GetTaskPeriodMyActions(int taskId)
+    public IEnumerable<MyAction> GetChartPeriodMyActions(int taskId)
     {
-        return context.MyActions.Where(x => x.TaskId == taskId);
+        return context.MyActions.Where(x => x.ChartPeriodId == taskId);
     }
 
-    public MyAction GetMyActionAsync(int actionId)
+    public async Task<MyAction> GetMyActionAsync(int actionId)
     {
-        return context.MyActions.FirstOrDefault(x => x.Id == actionId);
+        return await context.MyActions.FirstOrDefaultAsync(x => x.Id == actionId);
     }
 
-    public void DeleteMyAction(int id)
+    public async Task DeleteMyAction(int id)
     {
         var existing = context.MyActions.FirstOrDefault(y => y.Id == id);
         context.MyActions.Remove(existing);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public void DeleteMyAction(MyAction action)
+    public async Task DeleteMyAction(MyAction action)
     {
         context.Remove(action);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
     #endregion MyAction
 
-    public void UpdateTodayVerse(TodayVerse todayVerse)
+    #region Daily Reflection
+
+    public async Task CreateDailyReflection(DailyReflection reflection)
+    {
+        context.DailyReflrections.Add(reflection);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task UpdateDailyReflection(DailyReflection reflrection)
+    {
+        context.Update(reflrection);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task<DailyReflection> GetDailyReflection(int id)
+    {
+        return await context.DailyReflrections.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task DeleteDailyReflection(int id)
+    {
+        var existing = await context.DailyReflrections.FirstOrDefaultAsync(x => x.Id == id);
+        if(existing != null) 
+        {
+            context.Remove(existing);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    public async Task DeleteDailyReflection(DailyReflection reflrection)
+    {
+        context.Remove(reflrection);
+        await context.SaveChangesAsync();
+    }
+
+    #endregion Daily Reflection
+
+    public async Task<AttachVerse> GetTodayVerseAsync()
+    {
+        return await context.AttachVerses.FirstOrDefaultAsync(x => x.DailyReflectionId == -1);
+    }
+
+    public async Task UpdateTodayVerseAsync(TodayVerse todayVerse)
     {
         using var conn = new SqlConnection(connectionStrings.DefaultConnection);
-        var existing = GetTodayVerse();
+        var existing = await GetTodayVerseAsync();
 
-        if (existing != null)
+        if (existing is not null)
         {
-            conn.Execute("UPDATE AppInformations SET InfoValue=@value, DateUpdated=@updated WHERE InfoKey='TodayVerse'"
-                , new { @value = $"{todayVerse.details.text};{todayVerse.details.reference};{todayVerse.details.version}", @updated = DateTime.Now });
+            await conn.ExecuteAsync("UPDATE AttachVerses SET Text=@text, BibleId=@ref, VerseId=@verse WHERE DailyReflectionId=-1"
+                , new { @text = todayVerse.details.text, @verse = todayVerse.details.reference, @ref = todayVerse.details.version });
         }
         else 
         {
-            conn.Execute("INSERT INTO AppInformations VALUES (@key, @value, @updated)"
+            await conn.ExecuteAsync("INSERT INTO AttachVerses (Text, BibleId, VerseId, DailyReflectionId) VALUES (@text, @ref, @verse, -1)"
                 , new
                 {
-                    @key = "TodayVerse",
-                    @value = $"{todayVerse.details.text};{todayVerse.details.reference};{todayVerse.details.version}",
-                    @updated = DateTime.Now
+                    @text = todayVerse.details.text,
+                    @verse = todayVerse.details.reference,
+                    @ref = todayVerse.details.version
                 });
         }
     }
 
-    public AppInformation GetTodayVerse()
+    public async Task<IEnumerable<AppInformation>> GetAppInformation(string key)
     {
         using var conn = new SqlConnection(connectionStrings.DefaultConnection);
-        return conn.Query<AppInformation>("SELECT * FROM AppInformations WHERE InfoKey='TodayVerse' AND DateUpdated BETWEEN @startToday AND @endToday",
-            new {
-                @startToday = DateTime.Now.Date,
-                @endToday = DateTime.Now.Date.AddHours(23).AddMinutes(59)
-            })
-            .FirstOrDefault();
+        return await conn.QueryAsync<AppInformation>("SELECT * FROM AppInformations WHERE InfoKey=@key", new { key });
+    }
+
+    public async Task<Dictionary<int, Tuple<int, DailyReflection>>> GetMyPracticesAsync(int chartPeriodId, int myPracticeId)
+    {
+        var dailyReflectionIds = await context.ChartPeriodMap
+            .Where(x => x.ChartPeriodId == chartPeriodId && x.MyPracticeId == myPracticeId)
+            .ToListAsync();
+
+        var result = new Dictionary<int, Tuple<int, DailyReflection>> ();
+        foreach (var item in dailyReflectionIds)
+        {
+            var dailyReflection = await context.DailyReflrections.FirstOrDefaultAsync(x => x.Id == item.DailyReflectionId);
+            var count = await context.MyPracticeDailyReflrectionMap.CountAsync(x=>x.MyPracticeId == myPracticeId);
+            var dailyReflectionCount = new Tuple<int, DailyReflection>(count, dailyReflection);
+
+            result.Add(item.OccurenceId, dailyReflectionCount);
+        }
+
+        return result;
     }
 }

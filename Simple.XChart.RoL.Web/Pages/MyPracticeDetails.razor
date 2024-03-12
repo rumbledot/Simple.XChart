@@ -1,0 +1,30 @@
+﻿@page "/practice/{id}"
+
+<div class="occurence-row">
+    <header class="card-heading">
+        <InputText @bind-Value=
+    </header>
+    <content class="card-body">
+        @reflection.Description
+    </content>
+    <div class="card-footer">
+    </div>
+</div>
+
+@if (Reflections.Any())
+{
+    foreach (var reflection in Reflections)
+    {
+        <div class="occurence-row">
+            <header class="card-heading">
+                @reflection.Title
+            </header>
+            <content class="card-body">
+                @reflection.Description
+            </content>
+            <div class="card-footer">
+                
+            </div>
+        </div>
+    }
+}

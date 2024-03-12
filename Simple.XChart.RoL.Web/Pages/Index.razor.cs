@@ -16,21 +16,5 @@ public partial class Index
     [Inject]
     public NavigationManager nav { get; set; }
 
-    private IEnumerable<TobeGoal> goals { get; set; }
-    private int activeGoal { get; set; }
-    private IEnumerable<MyPractice> practices { get; set; }
-    private int activePractice { get; set; }
-    private IEnumerable<MyAction> myActions { get; set; }
-    private DateTime todaysDate { get; set; }
-    private TodayVerseResponse todaysVerse { get; set; }
-
-    protected async override Task OnInitializedAsync()
-    {
-        todaysDate = DateTime.Now;
-    }
-
-    private void SetupChart()
-    {
-        nav.NavigateTo("/rol");
-    }
+    public int ChartPeriodId { get; set; } = 1;
 }

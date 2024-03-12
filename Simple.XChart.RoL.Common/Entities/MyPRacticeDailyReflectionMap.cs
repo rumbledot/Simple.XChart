@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace Simple.XChart.RoL.Common.Entities;
 
-public class MyPractice
+public class MyPRacticeDailyReflectionMap
 {
-    [Key]
-    public int Id { get; set; }
-    [StringLength(200)]
-    public string Description { get; set; }
-    public int GoalId { get; set; }
+    public int MyPracticeId { get; set; }
+    public int DailyReflectionId { get; set; }
 }

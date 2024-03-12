@@ -1,4 +1,20 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@media (min-width:320px) { /* smartphones, iPhone, portrait 480x320 phones */
+}
+
+@media (min-width:481px) { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+}
+
+@media (min-width:641px) { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+}
+
+@media (min-width:961px) { /* tablet, landscape iPad, lo-res laptops ands desktops */
+}
+
+@media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */
+}
+
+@media (min-width:1281px) { /* hi-res laptops and desktops */
+}
 
 html {
     width: 100vw;
@@ -42,6 +58,10 @@ body {
         background-color: #a8bbbf;
     }
 
+a {
+    text-decoration: none;
+}
+
 h1, h2, h3, h4, h5 {
     font-family: Consolas;
     font-weight: 700;
@@ -73,6 +93,7 @@ small {
 
 main {
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-gutter: stable;
 }
 
@@ -82,26 +103,80 @@ main {
     margin: 0 auto;
 }
 
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+}
+
+.text-center {
+    text-align:center;
+}
+
+.text-white {
+    color:white;
+}
+
+.text-black {
+    color: black;
+}
+
 .hero-banner {
-    position: relative;
-    margin-top: 50px;
-    margin-bottom: 10px;
-    min-height: 450px;
-    background-color: lightgray;
+    display: flex;
+    flex-direction: row;
+    height: 350px;
+}
+
+.hero-banner-heading {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-evenly;
+    align-items:center;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
 }
 
-.hero-banner-heading {
-    display: inline-block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0px;
-    padding: 0;
-    border-bottom: 30px solid white;
-    text-align: revert
+.hero-banner-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+    height: 60px;
+}
+
+@media (width < 600px) {
+    .hero-banner-title-text {
+        font-size: 30px;
+    }
+}
+
+@media (width > 601px) {
+    .hero-banner-title-text {
+        font-size: 45px;
+    }
+}
+
+.hero-banner-title-text {
+    padding: 0 50px;
+    background-color: white;
+    border-top-right-radius: 15px;
+}
+
+.hero-banner-title-link {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: flex-end;
+    justify-content: flex-end;
+    background-color: transparent;
+    border-bottom: 2px solid black;
 }
 
     .hero-banner-heading h2 {
@@ -294,9 +369,11 @@ main {
     background-color: black;
     padding: 10px;
     text-align: center;
+    border-bottom-left-radius: 15px;
 }
 
 .today-verse {
+    flex-grow: 1;
     align-self: center;
     padding: 20px;
     text-align: center;

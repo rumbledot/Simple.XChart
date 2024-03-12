@@ -10,33 +10,43 @@ namespace Simple.XChart.RoL.Common.Data;
 
 public interface IRoLDatabaseHelper
 {
-    void SaveTaskPeriods(TaskPeriod taskPeriod);
-    void UpdateTaskPeriod(TaskPeriod taskPeriod);
-    IEnumerable<TaskPeriod> GetTaskPeriods();
-    Task<TaskPeriod> GetTaskPeriodAsync(int id);
-    Task<TaskPeriod> GetActiveTaskPeriodAsync();
+    Task CreateChartPeriods(ChartPeriod taskPeriod);
+    Task UpdateChartPeriod(ChartPeriod taskPeriod);
+    Task<IEnumerable<ChartPeriod>> GetChartPeriods();
+    Task<ChartPeriod> GetCharteriodAsync(int id);
+    Task<ChartPeriod> GetActiveChartPeriodAsync();
 
-    void SaveTobeGoal(TobeGoal goal);
-    void UpdateTobeGoal(TobeGoal goal);
-    IEnumerable<TobeGoal> GetTaskPeriodTobeGoals(int taskId);
-    Task<TobeGoal> GetTobeGoalAsync(int id);
-    void DeleteTobeGoal(int id);
-    void DeleteTobeGoal(TobeGoal goal);
+    Task CreateMyGoal(MyGoal goal);
+    Task UpdateMyGoal(MyGoal goal);
+    IEnumerable<MyGoal> GetChartPeriodMyGoals(int taskId);
+    Task<MyGoal> GetMyGoalAsync(int id);
+    Task DeleteMyGoal(int id);
+    Task DeleteMyGoal(MyGoal goal);
 
-    void SaveMyPractice(MyPractice myPractice);
-    void UpdateMyPracticeAsync(MyPractice myPractice);
-    IEnumerable<MyPractice> GetTaskPeriodMyPracticesAsync(int taskId);
+    Task CreateMyPractice(MyPractice myPractice);
+    Task UpdateMyPracticeAsync(MyPractice myPractice);
+    IEnumerable<MyPractice> GetChartPeriodMyPracticesAsync(int taskId);
     Task<MyPractice> GetMyPracticeAsync(int practiceId);
-    void DeleteMyPractice(int practiceId);
-    void DeleteMyPractice(MyPractice myPractice);
+    Task DeleteMyPractice(int practiceId);
+    Task DeleteMyPractice(MyPractice myPractice);
+    Task SaveMyPracticeDailyReflection(int chartPeriodId, int myPracticeId, int occurenceId, DailyReflection dailyReflection);
+    Task<IEnumerable<DailyReflection>> GetMyPracticeDailyReflections(int myPracticeId);
 
-    void SaveMyActionAsync(MyAction action);
-    void UpdateMyActionAsync(MyAction action);
-    IEnumerable<MyAction>GetTaskPeriodMyActions(int taskId);
-    MyAction GetMyActionAsync(int actionId);
-    void DeleteMyAction(int id);
-    void DeleteMyAction(MyAction action);
+    Task CreateMyActionAsync(MyAction action);
+    Task UpdateMyActionAsync(MyAction action);
+    IEnumerable<MyAction> GetChartPeriodMyActions(int taskId);
+    Task<MyAction> GetMyActionAsync(int actionId);
+    Task DeleteMyAction(int id);
+    Task DeleteMyAction(MyAction action);
 
-    AppInformation GetTodayVerse();
-    void UpdateTodayVerse(TodayVerse verse);
+    Task CreateDailyReflection(DailyReflection reflection);
+    Task UpdateDailyReflection(DailyReflection reflrection);
+    Task<DailyReflection> GetDailyReflection(int id);
+    Task DeleteDailyReflection(int id);
+    Task DeleteDailyReflection(DailyReflection reflrection);
+    Task<Dictionary<int, Tuple<int, DailyReflection>>> GetMyPracticesAsync(int chartPeriodId, int myPracticeId);
+
+    Task<AttachVerse> GetTodayVerseAsync();
+    Task UpdateTodayVerseAsync(TodayVerse verse);
+    Task<IEnumerable<AppInformation>> GetAppInformation(string key);
 }

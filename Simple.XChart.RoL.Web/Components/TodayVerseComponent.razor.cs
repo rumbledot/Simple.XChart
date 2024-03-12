@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Simple.XChart.RoL.Common.Data;
+using Simple.XChart.RoL.Common.Entities;
 using Simple.XChart.RoL.Common.Models;
 using Simple.XChart.RoL.Common.Services;
 
@@ -14,7 +15,7 @@ public partial class TodayVerseComponent
     private VerseService verseService { get; set; }
 
     private DateTime todaysDate { get; set; }
-    private TodayVerseResponse todaysVerse { get; set; }
+    private AttachVerse todaysVerse { get; set; }
 
     protected override void OnInitialized()
     {
@@ -23,28 +24,23 @@ public partial class TodayVerseComponent
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        var updatedTodayVerse = db.GetTodayVerse();
+        var updatedTodayVerse = await db.GetTodayVerseAsync();
 
         if (updatedTodayVerse == null)
         {
-            todaysVerse = await verseService.GetTodayVerse();
-            db.UpdateTodayVerse(todaysVerse.verse);
+            var todaysVerseResponse = await verseService.GetTodayVerse();
+            await db.UpdateTodayVerseAsync(todaysVerseResponse.verse);
+
+            todaysVerse = new AttachVerse()
+            {
+                Text = todaysVerseResponse.verse.details.text,
+                BibleId = todaysVerseResponse.verse.details.version,
+                VerseId = todaysVerseResponse.verse.details.reference
+            };
         }
         else
         {
-            var verseParts = updatedTodayVerse.InfoValue.Split(';');
-            todaysVerse = new TodayVerseResponse
-            {
-                verse = new TodayVerse
-                {
-                    details = new VerseDetails
-                    {
-                        text = verseParts[0],
-                        reference = verseParts[1],
-                        version = verseParts[2]
-                    }
-                }
-            };
+            todaysVerse = updatedTodayVerse;
         }
 
         await InvokeAsync(() => StateHasChanged());
