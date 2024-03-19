@@ -9,18 +9,19 @@ namespace Simple.XChart.RoL.Common.Entities;
 
 public class BannerImage
 {
+    [Key]
     public int Id { get; set; }
     [StringLength(300)]
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
     [StringLength(300)]
-    public string ImageLandscapeUrl { get; set; }
+    public string? ImageLandscapeUrl { get; set; }
     [StringLength(300)]
-    public string ImageAlt { get; set; }
+    public string? ImageAlt { get; set; }
     [StringLength(200)]
-    public string Photographer { get; set; }
+    public string? Photographer { get; set; }
     [StringLength(300)]
-    public string PhotographerUrl { get; set; }
+    public string? PhotographerUrl { get; set; }
     public DateTime DateUpdated { get; set; }
     [StringLength(10)]
-    public string AverageColor { get; set; }
+    public string? AverageColor { get; set; }
 }

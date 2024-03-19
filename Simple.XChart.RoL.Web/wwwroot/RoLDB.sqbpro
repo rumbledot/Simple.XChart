@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="D:/Code/Simple.XChart/Simple.XChart.RoL.Web/wwwroot/RoLDB.sqlite3" readonly="0" foreign_keys="" case_sensitive_like="" temp_store="" wal_autocheckpoint="" synchronous=""/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1645"/><column_width id="4" width="0"/></tab_structure><tab_browse><current_table name="0,0:"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE [AppInformations](
+	[Code] [nvarchar](200) NOT NULL,
+	[Information] [nvarchar](200) NOT NULL,
+	[DateUpdated] [datetime2](7) NOT NULL
+)
+
+CREATE TABLE [AttachVerses](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[BibleId] [nvarchar](100) NULL,
+	[BookId] [nvarchar](100) NULL,
+	[ChapterId] [nvarchar](100) NULL,
+	[VerseId] [nvarchar](100) NULL,
+	[Text] [varchar] NULL,
+	[MyActionId] [int] NOT NULL
+ )
+
+CREATE TABLE [BannerImages](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ImageUrl] [nvarchar](300) NULL,
+	[ImageLandscapeUrl] [nvarchar](300) NULL,
+	[ImageAlt] [nvarchar](300) NULL,
+	[Photographer] [nvarchar](200) NULL,
+	[PhotographerUrl] [nvarchar](300) NULL,
+	[DateUpdated] [datetime2](7) NOT NULL,
+	[AverageColor] [nvarchar](10) NULL )
+
+CREATE TABLE [Charts](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](200) NOT NULL,
+	[Description] [nvarchar](1000) NULL,
+	[DateStart] [datetime2](7) NOT NULL,
+	[DateEnd] [datetime2](7) NOT NULL)
+
+CREATE TABLE [Goals](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Description] [nvarchar](200) NOT NULL,
+	[ChartId] [int] NOT NULL )
+
+CREATE TABLE [MyActions](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](200) NULL,
+	[Description] [nvarchar] NULL,
+	[DateCreated] [datetime2](7) NOT NULL,
+	[DateUpdated] [datetime2](7) NULL,
+	[PracticeId] [int] NOT NULL,
+	[OccurenceId] [int] NOT NULL )
+
+CREATE TABLE [Occurences](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Description] [nvarchar](100) NULL,
+	[DaysCount] [int] NOT NULL )
+
+CREATE TABLE [Practices](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Description] [nvarchar](200) NULL,
+	[GoalId] [int] NOT NULL )</sql><sql name="SQL 2">SELECT * from Charts where id=1</sql><current_tab id="1"/></tab_sql></sqlb_project>

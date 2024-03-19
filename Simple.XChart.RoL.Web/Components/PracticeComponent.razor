@@ -1,104 +1,49 @@
-﻿<div class="occurence-row">
+﻿<div class="small-screen">
+    <p>
+        @(string.IsNullOrEmpty(practiceTitle) ? "" : practiceTitle)
+    </p>
+</div>
+
+<div class="occurence-row">
     <div class="occurence-title">
         @(string.IsNullOrEmpty(practiceTitle) ? "" : practiceTitle)
     </div>
-    <section class="cell @popupFlag[0]">
-@if (string.IsNullOrEmpty(popupFlag[0])) 
-{
-    @if (Daily != null) 
-    { 
-    <header class="card-heading">
-        @Daily.Title
-    </header>
-    <content class="card-body">
-        @Daily.Description
-    </content>
-    <div class="card-footer">
-         <button  @onclick="() => SetEditMode(1)"><i class="fa-solid fa-pen"></i></button>
-         <button  @onclick="() => ViewMyPracticeDetails()"><i class="fa-regular fa-eye"></i></button>
-         <div class="reflection-counter"><i class="fa-regular fa-note-sticky"></i>@reflectionCount[0]</div>
-    </div>
-    }
-}
-else
-{
-    <EditForm Model="Daily" OnSubmit="UpdateDailyPractice">
-    <header class="card-heading">
-        <label for="daily-title">Title</label>
-        <InputText id="daily-title" @bind-Value=@Daily.Title></InputText>
-    </header>
-    <content class="card-body">
-        <label for="daily-desc">Description</label>
-        <InputTextArea id="daily-desc" @bind-Value=@Daily.Description style="resize: none;"></InputTextArea>
-        <button>Save</button>
-    </content>
-    </EditForm>
-}
-    </section>
-    <section class="cell @popupFlag[1]">
-@if (string.IsNullOrEmpty(popupFlag[1]))
-{
-    @if (Weekly != null)
+    @if (practiceActions != null && practiceActions.Count() > 0)
     {
-        <header class="card-heading">
-            @Weekly.Title <button @onclick="() => SetEditMode(2)"><i class="fa-solid fa-pen"></i></button>
-        </header>
-        <content class="card-body">
-            @Weekly.Description
-        </content>
-        <div class="card-footer">
-            <button  @onclick="() => SetEditMode(2)"><i class="fa-solid fa-pen"></i></button>
-            <button  @onclick="() => ViewMyPracticeDetails()"><i class="fa-regular fa-eye"></i></button>
-            <div class="reflection-counter"><i class="fa-regular fa-note-sticky"></i>@reflectionCount[1]</div>
-        </div>
+        foreach (PracticeActionViewModel action in practiceActions)
+        {
+            <section class="cell @action.popUpFlag">
+                @if(action.inEditMode)
+                {
+                    <EditForm Model="newReflection" OnSubmit="UpdateAction">
+                        <content class="card-body">
+                            <p>Title</p>
+                            <InputText id="daily-title" @bind-Value=@newReflection.Title></InputText>
+                            <p>Description</p>
+                            <InputTextArea id="daily-desc" @bind-Value=@newReflection.Description style="resize: none;"></InputTextArea>
+                        </content>
+                        <div class="card-footer">
+                            <button type="button" class="btn-warn" @onclick="() => CancelEditMode(action)">Cancel</button>
+                            <button>Save</button>
+                        </div>
+                    </EditForm>
+                }
+                else
+                {
+                    <header class="card-heading">
+                        @action.practiceAction.Title
+                    </header>
+                    <content class="card-body">
+                        @action.practiceAction.Description
+                    </content>
+                    <div class="card-footer">
+                        <button type="button" class="btn-warn" @onclick="() => ToggleEditMode(action)"><i class="fa-regular fa-pen-to-square"></i></button>
+                        <button type="button" class="btn-info" @onclick="() => ViewMyPracticeDetails(action.occurence.Id)"><i class="fa-regular fa-eye"></i></button>
+                        <div class="filler"></div>
+                        <div class="reflection-counter"><i class="fa-regular fa-note-sticky"></i></div>
+                    </div>
+                }
+            </section>
+        }
     }
-}
-else
-{
-    <EditForm Model="Weekly" OnSubmit="UpdateWeeklyPractice">
-        <header class="card-heading">
-            <label for="Weekly-title">Title</label>
-            <InputText id="Weekly-title" @bind-Value=@Weekly.Title></InputText>
-        </header>
-        <content class="card-body">
-            <label for="Weekly-desc">Description</label>
-            <InputTextArea id="Weekly-desc" @bind-Value=@Weekly.Description style="resize: none;"></InputTextArea>
-            <button>Save</button>
-        </content>
-    </EditForm>
-}
-    </section>
-    <section class="cell @popupFlag[2]">
-@if (string.IsNullOrEmpty(popupFlag[2])) 
-{
-    @if (Monthly != null) 
-    { 
-    <header class="card-heading">
-        @Monthly.Title <button  @onclick="() => SetEditMode(3)"><i class="fa-solid fa-pen"></i></button>
-    </header>
-    <content class="card-body">
-        @Monthly.Description
-    </content>
-    <div class="card-footer">
-         <button  @onclick="() => SetEditMode(3)"><i class="fa-solid fa-pen"></i></button>
-         <button  @onclick="() => ViewMyPracticeDetails()"><i class="fa-regular fa-eye"></i></button>
-         <div class="reflection-counter"><i class="fa-regular fa-note-sticky"></i>@reflectionCount[2]</div>
-    </div>
-    }
-}
-else
-{
-    <EditForm Model="Monthly" OnSubmit="UpdateMonthlyPractice">
-    <header class="card-heading">
-        <label for="Monthly-title">Title</label>
-        <InputText id="Monthly-title" @bind-Value=@Monthly.Title></InputText>
-    </header>
-    <content class="card-body">
-        <label for="Monthly-desc">Description</label>
-        <InputTextArea id="Monthly-desc" @bind-Value=@Monthly.Description style="resize: none;"></InputTextArea>
-        <button>Save</button>
-    </content>
-    </EditForm>
-}
-    </section>
 </div>

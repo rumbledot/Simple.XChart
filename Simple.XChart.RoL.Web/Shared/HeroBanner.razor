@@ -1,29 +1,24 @@
 ﻿<div class="hero-banner">
-    <div class="today-date">
-        <h1>@todaysDate.Day</h1>
-        <p>@todaysDate.ToString("MMM")</p>
-    </div>
     <div class="hero-banner-heading">
         <div style="flex-grow: 1;">
             
         </div>
-        @if (todaysVerse != null)
-        {
-            <div class="@colorContrast" style="padding: 0 50px;">
-                <h5>@todaysVerse.Text</h5>
-            </div>
-            <div class="@colorContrast" style="padding: 0 50px;">
-                <p><strong>@todaysVerse.VerseId</strong> <span>@todaysVerse.BibleId</span></p>
-            </div>
-        }
-        <div class="hero-banner-title">
-            <div class="hero-banner-title-text">Rule of Life</div>
-            <div class="hero-banner-title-link">
-                @if (BannerImage != null) 
-                {
-                    <a class="@colorContrast" href="@BannerImage.PhotographerUrl" target="_blank">Photo by @BannerImage.Photographer</a>
-                }
-            </div>
+    @if (todaysVerse != null)
+    {
+        <div class="@colorContrast" style="padding: 0 50px;">
+            <h5>@todaysVerse.Text</h5>
+        </div>
+        <div class="@colorContrast" style="padding: 0 50px;">
+            <p><strong>@todaysVerse.VerseId</strong> <span>@todaysVerse.BibleId</span></p>
+        </div>
+    }
+        <div style="flex-grow: 1;">
         </div>
     </div>
+@if (bannerImage != null) 
+{
+    <div class="hero-banner-title-link">
+        <a class="@colorContrast" href="@bannerImage.PhotographerUrl" target="_blank">Photo by @bannerImage.Photographer</a>
+    </div>
+}
 </div>

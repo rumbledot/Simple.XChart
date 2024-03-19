@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.EntityFrameworkCore;
 using Simple.XChart.RoL.Common.Data;
+using Simple.XChart.RoL.Common.Models;
+using Simple.XChart.RoL.Common.Helpers;
 using Simple.XChart.RoL.Common.Services;
-using Simple.XChart.RoL.Web.Data;
 using Simple.XChart.RoL.Web.Helpers;
 using Simple.XChart.RoL.Web.Models;
 
@@ -12,20 +10,33 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddDbContextFactory<RoLDBContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Simple.XChart.RoL.Web"));
-    }, ServiceLifetime.Transient);
+
+var connectionSettings = builder.Configuration.GetSection("ConnectionSettings").Get<ConnectionSettings>();
+builder.Services.AddSingleton(connectionSettings);
+
+var apiSettings = builder.Configuration.GetSection("ApiSettings").Get<ApiSettings>();
+builder.Services.AddSingleton(apiSettings);
+
+builder.Services.AddScoped(p => new PexelsService(builder.Configuration.GetValue<string>("ApiKeys:pexels")));
 
 builder.Services.AddHttpClient<VerseService>(client =>
-    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiUrls:VerseUrl"))
+    client.BaseAddress = new Uri(apiSettings.ApiUrls.Verse)
     );
 
-var connectionStrings = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
-builder.Services.AddSingleton(connectionStrings);
+builder.Services.AddScoped(p =>
+    new PexelsService(apiSettings.ApiKeys.Pexels)
+    );
 
-builder.Services.AddScoped<PexelsService>(p => new PexelsService(builder.Configuration.GetValue<string>("ApiKeys:pexels")));
+var databaseFile = Path.Combine(Directory.GetCurrentDirectory(), connectionSettings.SqliteConnection);
+var connectionString = $"Data Source={databaseFile}";
 
-builder.Services.AddTransient<RoLDatabaseHelper>();
+var verseService = new VerseService(new HttpClient { BaseAddress = new Uri(apiSettings.ApiUrls.Verse) });
+var pexelsService = new PexelsService(apiSettings.ApiKeys.Pexels);
+builder.Services.AddTransient(x =>
+    new RoLRepositoryHelper(connectionString, pexelsService, verseService, true)
+);
+
+builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<JSHelper>();
 

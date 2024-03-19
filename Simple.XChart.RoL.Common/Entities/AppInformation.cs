@@ -1,19 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Simple.XChart.RoL.Common.Entities;
 
 public class AppInformation
 {
     [Key]
+    public int Id { get; set; }
     [StringLength(200)]
-    public string InfoKey { get; set; }
+    public string Code { get; set; }
     [StringLength(200)]
-    public string InfoValue { get; set; }
+    public string Information { get; set; }
     public DateTime DateUpdated { get; set; }
 }

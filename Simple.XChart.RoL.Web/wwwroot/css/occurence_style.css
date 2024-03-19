@@ -6,6 +6,7 @@
 .occurence-row {
     display: flex;
     flex-direction: row;
+    align-items:stretch;
     width: 100%;
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -26,58 +27,55 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    position: relative;
-    height: 250px;
     flex-grow: 1;
-    border-right: 1px solid gray;
+    position: relative;
+    padding: 10px;
 }
+
+    .cell form {
+        width: 90%;
+        margin: 0 auto;
+    }
 
 .occurence-column-corner {
     width: 39px;
-    background-color:lightgray;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
 }
 
 .occurence-column-header {
     flex-grow: 1;
     background-color: lightgray;
+    height: 39px;
+    margin: 5px;
     text-align: center;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
 }
 
 .popup {
     position: fixed;
-    top: 50%;
-    left: 50%;
     width: 500px;
+    max-width: 100vw;
     height: 500px;
+    max-height: 100vh;
     padding: 5px;
     background-color: white;
     border: 1px solid black;
-    transform: translate(-50%, -50%);
     z-index: 99;
     transition: all .2s;
 }
 
-.cell.popup .card-heading {
-    display: flex !important;
+.cell.popup form {
+    display:flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-evenly;
+    width: auto;
+    height: 100%;
+    margin: 10px;
+}
+
+.cell.popup .card-heading {
+    height:auto;
 }
 
 .cell.popup .card-heading input {
     width: 90%;
-}
-
-.cell.popup .card-body {
-    display: flex !important;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-evenly;
-}
-
-.cell.popup .card-body textarea {
-    width: 90%;
-    height: 400px;
 }

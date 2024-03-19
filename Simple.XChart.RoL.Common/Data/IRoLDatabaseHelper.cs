@@ -10,27 +10,25 @@ namespace Simple.XChart.RoL.Common.Data;
 
 public interface IRoLDatabaseHelper
 {
-    Task CreateChartPeriods(ChartPeriod taskPeriod);
-    Task UpdateChartPeriod(ChartPeriod taskPeriod);
-    Task<IEnumerable<ChartPeriod>> GetChartPeriods();
-    Task<ChartPeriod> GetCharteriodAsync(int id);
-    Task<ChartPeriod> GetActiveChartPeriodAsync();
+    Task CreateChartPeriods(Chart taskPeriod);
+    Task UpdateChartPeriod(Chart taskPeriod);
+    Task<IEnumerable<Chart>> GetChartPeriods();
+    Task<Chart> GetCharteriodAsync(int id);
+    Task<Chart> GetActiveChartPeriodAsync();
 
-    Task CreateMyGoal(MyGoal goal);
-    Task UpdateMyGoal(MyGoal goal);
-    IEnumerable<MyGoal> GetChartPeriodMyGoals(int taskId);
-    Task<MyGoal> GetMyGoalAsync(int id);
+    Task CreateMyGoal(ChartGoal goal);
+    Task UpdateMyGoal(ChartGoal goal);
+    IEnumerable<ChartGoal> GetChartPeriodMyGoals(int taskId);
+    Task<ChartGoal> GetMyGoalAsync(int id);
     Task DeleteMyGoal(int id);
-    Task DeleteMyGoal(MyGoal goal);
+    Task DeleteMyGoal(ChartGoal goal);
 
-    Task CreateMyPractice(MyPractice myPractice);
-    Task UpdateMyPracticeAsync(MyPractice myPractice);
-    IEnumerable<MyPractice> GetChartPeriodMyPracticesAsync(int taskId);
-    Task<MyPractice> GetMyPracticeAsync(int practiceId);
+    Task CreateMyPractice(ChartPractice myPractice);
+    Task UpdateMyPracticeAsync(ChartPractice myPractice);
+    IEnumerable<ChartPractice> GetChartPeriodMyPracticesAsync(int taskId);
+    Task<ChartPractice> GetMyPracticeAsync(int practiceId);
     Task DeleteMyPractice(int practiceId);
-    Task DeleteMyPractice(MyPractice myPractice);
-    Task SaveMyPracticeDailyReflection(int chartPeriodId, int myPracticeId, int occurenceId, DailyReflection dailyReflection);
-    Task<IEnumerable<DailyReflection>> GetMyPracticeDailyReflections(int myPracticeId);
+    Task DeleteMyPractice(ChartPractice myPractice);
 
     Task CreateMyActionAsync(MyAction action);
     Task UpdateMyActionAsync(MyAction action);
@@ -38,13 +36,6 @@ public interface IRoLDatabaseHelper
     Task<MyAction> GetMyActionAsync(int actionId);
     Task DeleteMyAction(int id);
     Task DeleteMyAction(MyAction action);
-
-    Task CreateDailyReflection(DailyReflection reflection);
-    Task UpdateDailyReflection(DailyReflection reflrection);
-    Task<DailyReflection> GetDailyReflection(int id);
-    Task DeleteDailyReflection(int id);
-    Task DeleteDailyReflection(DailyReflection reflrection);
-    Task<Dictionary<int, Tuple<int, DailyReflection>>> GetMyPracticesAsync(int chartPeriodId, int myPracticeId);
 
     Task<AttachVerse> GetTodayVerseAsync();
     Task UpdateTodayVerseAsync(TodayVerse verse);

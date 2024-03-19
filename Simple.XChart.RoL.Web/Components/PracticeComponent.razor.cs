@@ -1,83 +1,94 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
-using Simple.XChart.RoL.Common.Data;
+using Microsoft.Extensions.Caching.Memory;
 using Simple.XChart.RoL.Common.Entities;
+using Simple.XChart.RoL.Common.Helpers;
 using Simple.XChart.RoL.Common.Services;
+using Simple.XChart.RoL.Web.Models;
+using System;
 
 namespace Simple.XChart.RoL.Web.Components;
 
 public partial class PracticeComponent
 {
     [Inject]
-    private RoLDatabaseHelper db { get; set; }
-    private RoLDBContext context { get => db.context; }
+    private RoLRepositoryHelper db { get; set; }
     [Inject]
     private VerseService verseService { get; set; }
     [Inject]
     public NavigationManager Navigate { get; set; }
+    [Inject]
+    public IMemoryCache cache { get; set; }
 
     [CascadingParameter]
-    public int ChartPeriodId { get; set; }
+    public int chartId { get; set; }
     [Parameter]
-    public int MyPracticeId { get; set; }
+    public int practiceId { get; set; }
 
+    private ChartPractice myPractice { get; set; }    
+    public string practiceTitle => myPractice?.Description ?? string.Empty;
 
-    private string[] popupFlag { get; set; } = new string[3] { "", "" ,"" };
-    private int[] reflectionCount { get; set; }
-
-    private MyPractice MyPractice { get; set; }
-    public string practiceTitle => MyPractice?.Description ?? string.Empty;
-
-    private Dictionary<int, Tuple<int, DailyReflection>> DailyReflections { get; set; }
-    private DailyReflection Daily;
-    private DailyReflection Weekly;
-    private DailyReflection Monthly;
+    private IEnumerable<PracticeActionViewModel> practiceActions { get; set; }
+    private MyAction newReflection { get; set; }
+    private PracticeActionViewModel currentAction { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
-        MyPractice = await context.MyPractices.FirstOrDefaultAsync(x => x.Id == MyPracticeId);
-
-        DailyReflections = await db.GetMyPracticesAsync(ChartPeriodId, MyPracticeId);
-        Daily = DailyReflections.ContainsKey(1) && DailyReflections[1].Item2 != null ? DailyReflections[1].Item2 : new DailyReflection();
-        Weekly = DailyReflections.ContainsKey(2) && DailyReflections[2].Item2 != null ? DailyReflections[2].Item2 : new DailyReflection();
-        Monthly = DailyReflections.ContainsKey(3) && DailyReflections[3].Item2 != null ? DailyReflections[3].Item2 : new DailyReflection();
-
-        reflectionCount = new int[3] 
+        myPractice = await db.GetPractice(practiceId);
+        var occurences = await LoadOccurenceCached();
+        var actions = await db.GetPracticeFirstAction(practiceId);
+        List<PracticeActionViewModel> practiceActions = new List<PracticeActionViewModel>();
+        PracticeActionViewModel action;
+        foreach (var occurence in occurences)
         {
-            DailyReflections.ContainsKey(1) && DailyReflections[1].Item1 != null ? DailyReflections[1].Item1 : 0,
-            DailyReflections.ContainsKey(2) && DailyReflections[2].Item1 != null ? DailyReflections[2].Item1 : 0,
-            DailyReflections.ContainsKey(3) && DailyReflections[3].Item1 != null ? DailyReflections[3].Item1 : 0,
-        };
+            action = new PracticeActionViewModel();
+            action.occurence = occurence;
+            action.practiceAction = actions.FirstOrDefault(x => x.OccurenceId == occurence.Id) ?? new MyAction { OccurenceId = occurence.Id, PracticeId = practiceId, Id = 0 };
+
+            practiceActions.Add(action);
+        }
+
+        this.practiceActions = practiceActions;
     }
 
-    private void SetEditMode(int occurenceId)
+    private async Task<IEnumerable<ChartOccurence>> LoadOccurenceCached()
     {
-        popupFlag[occurenceId - 1] = string.IsNullOrEmpty(popupFlag[occurenceId - 1]) ? "popup" : "";
+        if (cache.Get("occurences") == null)
+        {
+            var occurences = await db.GetOccurences();
+            cache.Set("occurence", occurences);
+        }
+
+        return cache.Get<IEnumerable<ChartOccurence>>("occurence");
     }
 
-    private async Task UpdateDailyPractice()
+    private void ToggleEditMode(PracticeActionViewModel action)
     {
-        await db.SaveMyPracticeDailyReflection(ChartPeriodId, MyPracticeId, 1, Daily);
+        currentAction = action;
 
-        popupFlag[0] = "";
+        action.inEditMode = true;
+        newReflection = action.practiceAction;
     }
 
-    private async Task UpdateWeeklyPractice()
+    private void CancelEditMode(PracticeActionViewModel action)
     {
-        await db.SaveMyPracticeDailyReflection(ChartPeriodId, MyPracticeId, 2, Weekly);
+        currentAction = null;
 
-        popupFlag[1] = "";
+        action.inEditMode = false;
+        newReflection = new MyAction();
     }
 
-    private async Task UpdateMonthlyPractice()
+    private async Task UpdateAction()
     {
-        await db.SaveMyPracticeDailyReflection(ChartPeriodId, MyPracticeId, 3, Monthly);
+        await db.SavePracticeAction(newReflection);
 
-        popupFlag[2] = "";
+        currentAction.inEditMode = false;
+        newReflection = new MyAction();
+
+        await InvokeAsync(() => StateHasChanged());
     }
 
-    private async Task ViewMyPracticeDetails()
+    private async Task ViewMyPracticeDetails(int occurenceId)
     {
-        Navigate.NavigateTo($"/practice/{MyPracticeId}");
+        Navigate.NavigateTo($"/practice/{practiceId}/{occurenceId}");
     }
 }

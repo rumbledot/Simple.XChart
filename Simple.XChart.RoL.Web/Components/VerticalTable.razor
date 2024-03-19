@@ -1,18 +1,18 @@
 ﻿<section class="occurence-container">
     <div class="occurence-row">
         <div class="occurence-column-corner"></div>
-    @if (Occurences != null) {
-        @foreach (var item in Occurences)
-        {
-            <div class="occurence-column-header">@item.Description</div>
-        }
-    }
-    </div>
-@if (MyPractices != null)
-{
-    @foreach (var item in MyPractices)
+@if (occurences != null) {
+    @foreach (var item in occurences)
     {
-    <PracticeComponent MyPracticeId=@item.Id />
+        <div class="occurence-column-header"><span>@item.Description</span></div>
+    }
+}
+    </div>
+@if (practices != null)
+{
+    @foreach (var item in practices)
+    {
+    <PracticeComponent practiceId="item.Id" />
     }
 }
 </section>

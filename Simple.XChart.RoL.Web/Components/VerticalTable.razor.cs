@@ -1,33 +1,26 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
-using Simple.XChart.RoL.Common.Data;
 using Simple.XChart.RoL.Common.Entities;
+using Simple.XChart.RoL.Common.Helpers;
 
 namespace Simple.XChart.RoL.Web.Components;
 
 public partial class VerticalTable
 {
     [Inject]
-    public RoLDatabaseHelper dbHelper { get; set; }
-    private RoLDBContext context { get => dbHelper.context; }
+    public RoLRepositoryHelper db { get; set; }
 
     [CascadingParameter]
-    public int ChartPeriodId { get; set; }
+    public int chartId { get; set; }
 
-    private IEnumerable<ChartOccurence> Occurences { get; set; }
-    private IEnumerable<MyPractice> MyPractices { get; set; }
+    private IEnumerable<ChartOccurence> occurences { get; set; }
+    private IEnumerable<ChartPractice> practices { get; set; }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            Occurences = await context.Occurences
-                .AsNoTracking()
-                .ToListAsync();
-
-            MyPractices = await context.MyPractices
-                .AsNoTracking()
-                .ToListAsync();
+            occurences = await db.GetOccurences();
+            practices = await db.GetChartPractices(chartId);
 
             await InvokeAsync(() => StateHasChanged());
         }

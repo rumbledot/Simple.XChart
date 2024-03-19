@@ -1,0 +1,85 @@
+﻿.occurence-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.occurence-row {
+    display: flex;
+    flex-direction: row;
+    align-items:stretch;
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.occurence-title {
+    display: inline-block;
+    padding: 10px;
+    color: white;
+    background-color:black;
+    text-orientation: mixed;
+    writing-mode: vertical-lr;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.cell {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    flex-grow: 1;
+    position: relative;
+    height: 250px;
+    padding: 10px;
+    border-right: 1px solid gray;
+}
+
+.occurence-column-corner {
+    width: 39px;
+    background-color:lightgray;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.occurence-column-header {
+    flex-grow: 1;
+    background-color: lightgray;
+    text-align: center;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    padding: 5px;
+    background-color: white;
+    border: 1px solid black;
+    transform: translate(-50%, -50%);
+    z-index: 99;
+    transition: all .2s;
+}
+
+.cell.popup .card-heading {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+}
+
+.cell.popup .card-heading input {
+    width: 90%;
+}
+
+.cell.popup .card-body {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+}
+
+.cell.popup .card-body textarea {
+    width: 90%;
+    height: 400px;
+}

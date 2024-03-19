@@ -2,6 +2,13 @@
 
 <PageTitle>Rule of Life</PageTitle>
 
-<CascadingValue Value="ChartPeriodId">
+<CascadingValue Value="chartId">
+    @if (chart is not null)
+    {
+    <div class="">
+        <h4>@chart.Title</h4>
+        <p>@chart.Description</p>
+    </div>
+    }
     <VerticalTable/>
 </CascadingValue>

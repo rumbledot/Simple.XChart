@@ -1,0 +1,34 @@
+﻿@model IndexViewModel
+
+@{
+    ViewData["Title"] = "Rule Of Life";
+}
+
+@section styles {
+    <style>
+
+    </style>
+}
+
+@section scripts {
+    <script>
+        $(function () { 
+            getBannerImage();
+        });
+
+        function getBannerImage() { 
+            $.ajax({
+                url: '@Url.Action("GetBanner")',
+                method: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    $('.hero-banner').css('background-image', "url(" + data.imageLandscapeUrl + ")");
+                    $('.hero-banner').prop('alt', data.imageAlt)
+                    $('.hero-banner-photographer').text(data.photographer);
+                    $('.hero-banner-photographer').prop('href', data.photographerUrl);
+                }
+            });
+        }
+    </script>
+}
+

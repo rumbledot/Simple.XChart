@@ -1,29 +1,52 @@
-﻿@page "/practice/{id}"
+﻿@page "/practice/{practiceId}/{occurenceId}"
 
 <div class="occurence-row">
-    <header class="card-heading">
-        <InputText @bind-Value=
-    </header>
-    <content class="card-body">
-        @reflection.Description
-    </content>
-    <div class="card-footer">
-    </div>
+    <h4><a @onclick="BackToMain">Back</a> @(practice is null ? "" : $" > {practice.Description}")</h4>
 </div>
 
-@if (Reflections.Any())
+<EditForm Model="newReflection" OnSubmit="AddNewReflection">
+    <div class="occurence-row">
+        <div class="reflection-entry">
+            <div class="today-date">
+                <p>New</p>
+            </div>
+        </div>
+        <div class="cell">
+            <label for="daily-title">Title</label>
+            <InputText id="daily-title" @bind-Value=newReflection.Title />
+            <label for="daily-desc">Description</label>
+            <InputTextArea id="daily-desc" @bind-Value=newReflection.Description  />
+            <div class="card-footer">
+                <button>Save</button>
+                <button type="button" class="btn-warn" @onclick="ClearNewReflection"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@if (actions is not null && actions.Any())
 {
-    foreach (var reflection in Reflections)
+    foreach (var reflection in actions)
     {
         <div class="occurence-row">
-            <header class="card-heading">
-                @reflection.Title
-            </header>
-            <content class="card-body">
-                @reflection.Description
-            </content>
-            <div class="card-footer">
-                
+            <div class="reflection-entry">
+                <div class="today-date">
+                    <h4>@reflection.reflection.DateUpdated?.Day</h4>
+                    <p>@reflection.reflection.DateUpdated?.ToString("MMM")</p>
+                    <span>@reflection.reflection.DateUpdated?.ToString("HH:mm")</span>
+                </div>
+            </div>
+            <div class="cell">
+                <header class="card-heading">
+                    @reflection.reflection.Title
+                </header>
+                <content class="card-body">
+                    @reflection.reflection.Description
+                </content>
+                <div class="card-footer">
+                    <button type="button" class="btn-warn" @onclick="() => EditReflection(reflection)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button type="button" class="btn-danger" @onclick="() => DeleteReflection(reflection)"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
             </div>
         </div>
     }
