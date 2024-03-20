@@ -1,5 +1,4 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
@@ -29,9 +28,11 @@ public partial class MyPracticeDetails
     public int chartId { get; set; }
     [Parameter]
     public string occurenceId { get; set; }
+    private int occurenceIdInt { get; set; } = -1;
     private ChartOccurence selectedOccurence;
     [Parameter]
     public string practiceId { get; set; }
+    private int practiceIdInt { get; set; } = -1;
     private PracticeComponentViewModel practiceVM;
     private ChartPractice practice => practiceVM.practice;
 
@@ -48,7 +49,28 @@ public partial class MyPracticeDetails
         actions = new RangeEnabledObservableCollection<ReflectionComponentViewModel>();
         actions.CollectionChanged += async (s, e) => await RefreshUI(s, e);
 
+        if (int.TryParse(practiceId, out int id))
+        {
+            practiceIdInt = id;
+        }
+
+        if (int.TryParse(occurenceId, out id))
+        {
+            occurenceIdInt = id;
+        }
+
         await LoadComponent();
+    }
+
+    private void ViewDetails(MyAction reflection = null)
+    {
+        if(reflection is null) 
+        {
+            Navigate.NavigateTo($"/reflection/{practiceId}/{occurenceId}/0");
+            return;
+        }
+
+        Navigate.NavigateTo($"/reflection/{practiceId}/{occurenceId}/{reflection.Id}");
     }
 
     private async Task RefreshUI(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -67,47 +89,9 @@ public partial class MyPracticeDetails
         return cache.Get<IEnumerable<ChartOccurence>>("occurence");
     }
 
-    private async Task AddNewReflection()
-    {
-        newReflection.OccurenceId = selectedOccurence.Id;
-        newReflection.PracticeId = practiceVM.practice.Id;
-        await db.SavePracticeAction(newReflection);
-
-        var reflectionVM = new ReflectionComponentViewModel();
-        reflectionVM.reflection = newReflection;
-
-        actions.Add(reflectionVM);
-    }
-
     private void BackToMain()
     {
         Navigate.NavigateTo("/");
-    }
-
-    private async Task SaveReflection()
-    {
-        await db.SavePracticeAction(currentReflection.reflection);
-        currentReflection = new ReflectionComponentViewModel();
-        currentReflection.reflection = new MyAction();
-        currentReflection.inEditMode = false;
-    }
-
-    private void EditReflection(ReflectionComponentViewModel reflectionVM)
-    {
-        reflectionVM.inEditMode = true;
-        newReflection = reflectionVM.reflection;
-        currentReflection = reflectionVM;
-    }
-
-    private void CancelEditReflection()
-    {
-        currentReflection.inEditMode = false;
-        currentReflection = null;
-    }
-
-    private void ClearNewReflection()
-    {
-        newReflection = new MyAction();
     }
 
     private async Task DeleteReflection(ReflectionComponentViewModel reflectionVM)
@@ -119,21 +103,20 @@ public partial class MyPracticeDetails
     private async Task LoadComponent()
     {
         practiceVM = new PracticeComponentViewModel();
-        if (int.TryParse(practiceId, out int id))
+        if (practiceIdInt > 0)
         {
-            var practice = await db.GetPractice(id);
+            var practice = await db.GetPractice(practiceIdInt);
             practiceVM.practice = practice;
+            var reflections = await db.GetPracticeActions(practiceIdInt);
+            practiceVM.reflections = reflections.Select(x => new ReflectionComponentViewModel { reflection = x });
         }
 
-        var reflections = await db.GetPracticeActions(id);
-        practiceVM.reflections = reflections.Select(x => new ReflectionComponentViewModel { reflection = x });
-
-        if (int.TryParse(occurenceId, out id))
+        if (occurenceIdInt > 0)
         {
             var occurences = await LoadOccurenceCached();
 
-            selectedOccurence = occurences.FirstOrDefault(x => x.Id == id);
-            actions.InsertRange(practiceVM.reflections.Where(x => x.reflection.OccurenceId == id));
+            selectedOccurence = occurences.FirstOrDefault(x => x.Id == occurenceIdInt);
+            actions.InsertRange(practiceVM.reflections.Where(x => x.reflection.OccurenceId == occurenceIdInt));
         }
     }
 }

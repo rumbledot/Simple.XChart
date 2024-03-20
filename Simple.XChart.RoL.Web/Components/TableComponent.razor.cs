@@ -4,7 +4,7 @@ using Simple.XChart.RoL.Common.Helpers;
 
 namespace Simple.XChart.RoL.Web.Components;
 
-public partial class VerticalTable
+public partial class TableComponent
 {
     [Inject]
     public RoLRepositoryHelper db { get; set; }
@@ -15,14 +15,9 @@ public partial class VerticalTable
     private IEnumerable<ChartOccurence> occurences { get; set; }
     private IEnumerable<ChartPractice> practices { get; set; }
 
-    protected async override Task OnAfterRenderAsync(bool firstRender)
+    protected async override Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-            occurences = await db.GetOccurences();
-            practices = await db.GetChartPractices(chartId);
-
-            await InvokeAsync(() => StateHasChanged());
-        }
+        occurences = await db.GetOccurences();
+        practices = await db.GetChartPractices(chartId);
     }
 }

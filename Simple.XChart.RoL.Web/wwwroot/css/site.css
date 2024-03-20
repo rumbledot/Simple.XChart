@@ -33,6 +33,7 @@ body {
     overflow: hidden;
     font-family: 'Roboto Mono';
     font-weight: 400;
+    background-color: #ececec;
 }
 
 h1, h2, h3, h4, h5 {
@@ -61,13 +62,22 @@ h5 {
 }
 
 main {
+    display: grid;
+    grid-auto-rows: 250px;
+
+    position: relative;
+
+    width: 100vw;
+    max-width: 1000px;
+
+    margin: 0 auto;
+    margin-top: 70px;
+    margin-bottom: 30px;
+
+    padding-right: 5px;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-gutter: both-edges;
-    width: 100vw;
-    max-width: 1000px;
-    margin: 0 auto;
-    margin-top: 70px;
 }
 
 ::-webkit-scrollbar {
@@ -90,13 +100,14 @@ main {
     }
 
 a {
-    filter: contrast(0.75) opacity(0.5);
+    filter: contrast(0.8) opacity(0.6);
     text-decoration: none;
     transition: all 0.2s;
 }
 
     a:hover {
-        filter: contrast(3) opacity(1);
+        cursor: pointer;
+        filter: contrast(5) opacity(1);
     }
 
 button {
@@ -112,6 +123,7 @@ button {
 
 label {
     padding: 10px;
+    font-size: 12px;
     font-family: 'Roboto Slab' sans-serif;
 }
 

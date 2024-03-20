@@ -19,6 +19,8 @@
 
 @media (width < 790px) {
     main {
+        grid-template-columns: 40px repeat(3, 1fr) !important;
+        grid-gap: 1px;
         width: 100vw !important;
         margin: 10px;
     }
@@ -27,73 +29,23 @@
         display: none;
     }
 
-    .occurence-column-corner, .occurence-title {
-        display: none !important;
+    .hero-banner {
+        grid-row-start: 1;
+        grid-row-end: 3;
+        grid-column-start: 1;
+        grid-column-end: 5;
     }
 
-    .top-bar-title {
-        font-size: 30px !important;
+    .chart-filler {
+        display: none;
     }
 
-    .occurence-row {
-        width: 100vw;
+    .chart-title {
+        display: none;
     }
 
-    .small-screen {
-        display: flex;
-        flex-direction: row;
-        align-items: stretch;
-        width: 100%;
-        height: 20px;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .cell.popup {
-        top: 70px !important;
-        left: 0;
-        right: 0;
-        width: 100vw !important;
-        height: calc(100vh - 70px) !important;
-        bottom: 0;
-        border: none !important;
-        border-radius: 0 !important;
-    }
-
-        .cell.popup .card-body textarea {
-            width: 90%;
-            height: 70vh !important;
-        }
-
-        .cell.popup .card-footer {
-            height: 20px !important;
-        }
-
-        .cell.popup .card-footer button {
-            width: 140px !important;
-            height: 40px !important;
-            padding: 5px 20px;
-            border-bottom: 10px solid rgba(0,0,0,0.5);
-            border-radius: 6px;
-            font-size: 1rem;
-            background-color: white;
-        }
-
-    .cell {
-        width: 20vw !important;
-        height: 150px !important;
-        border: 1px solid lightgray !important;
-        border-bottom: 10px solid lightgray;
-        border-radius: 10px;
-        margin: 5px;
-    }
-
-    button {
-        width: 20px !important;
-        height: 20px !important;
-        border-radius: 5px;
-        border: 0;
-        font-size: 0;
+    .chart-desc {
+        display: none;
     }
 
     .btn-warn {
@@ -107,9 +59,39 @@
     .btn-info {
         background-color: steelblue;
     }
+
+    .cell {
+        position: relative;
+    }
+
+        .cell::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            bottom: -1px;
+            width: 0px;
+            height: 0px;
+            background-color: white;
+            border-top: 15px solid lightgray;
+            border-right: 15px solid white;
+            border-left: 15px solid lightgray;
+            border-bottom: 15px solid white;
+        }
+
+    .cell-header {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        color: black;
+        background-color: lightgray;
+    }
 }
 
 @media (width > 791px) {
+    main {
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 5px;
+    }
+
     button {
         padding: 5px 20px;
         border-bottom: 10px solid rgba(0,0,0,0.5);
@@ -130,36 +112,19 @@
         border-bottom: 10px solid steelblue;
     }
 
-    .hero-banner-title-text {
-        font-size: 45px;
+    .hero-banner {
+        grid-row-start: 1;
+        grid-row-end: 3;
+        grid-column-start: 1;
+        grid-column-end: 3;
     }
 
-    .small-screen {
-        display: none;
-    }
-
-    .popup {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .cell.popup .card-body {
-        flex-grow: 1;
-        height: auto;
-    }
-
-        .cell.popup .card-body textarea {
-            width: 90%;
-            height: 200px;
-        }
-
-    .cell {
-        height: 250px;
-        border-right: 1px solid lightgray;
-    }
-
-    .card-body {
-        flex-grow: 1;
+    .cell-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        background-color: black;
     }
 }

@@ -1,49 +1,15 @@
-﻿<div class="small-screen">
-    <p>
-        @(string.IsNullOrEmpty(practiceTitle) ? "" : practiceTitle)
-    </p>
-</div>
-
-<div class="occurence-row">
-    <div class="occurence-title">
+﻿<div class="cell-header">
+    <div class="cell-header-text">
         @(string.IsNullOrEmpty(practiceTitle) ? "" : practiceTitle)
     </div>
-    @if (practiceActions != null && practiceActions.Count() > 0)
-    {
-        foreach (PracticeActionViewModel action in practiceActions)
-        {
-            <section class="cell @action.popUpFlag">
-                @if(action.inEditMode)
-                {
-                    <EditForm Model="newReflection" OnSubmit="UpdateAction">
-                        <content class="card-body">
-                            <p>Title</p>
-                            <InputText id="daily-title" @bind-Value=@newReflection.Title></InputText>
-                            <p>Description</p>
-                            <InputTextArea id="daily-desc" @bind-Value=@newReflection.Description style="resize: none;"></InputTextArea>
-                        </content>
-                        <div class="card-footer">
-                            <button type="button" class="btn-warn" @onclick="() => CancelEditMode(action)">Cancel</button>
-                            <button>Save</button>
-                        </div>
-                    </EditForm>
-                }
-                else
-                {
-                    <header class="card-heading">
-                        @action.practiceAction.Title
-                    </header>
-                    <content class="card-body">
-                        @action.practiceAction.Description
-                    </content>
-                    <div class="card-footer">
-                        <button type="button" class="btn-warn" @onclick="() => ToggleEditMode(action)"><i class="fa-regular fa-pen-to-square"></i></button>
-                        <button type="button" class="btn-info" @onclick="() => ViewMyPracticeDetails(action.occurence.Id)"><i class="fa-regular fa-eye"></i></button>
-                        <div class="filler"></div>
-                        <div class="reflection-counter"><i class="fa-regular fa-note-sticky"></i></div>
-                    </div>
-                }
-            </section>
-        }
-    }
 </div>
+@if (practiceActions != null && practiceActions.Count() > 0)
+{
+    foreach (PracticeActionViewModel action in practiceActions)
+    {
+    <div class="cell" @onclick="() => ViewMyPracticeDetails(action.occurence.Id)">
+        <div class="cell-title">@action.practiceAction.Title</div>
+        <div class="cell-desc">@action.practiceAction.Description</div>
+    </div>
+    }
+}

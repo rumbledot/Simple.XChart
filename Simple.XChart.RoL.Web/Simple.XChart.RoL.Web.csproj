@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Simple.XChart.RoL.Common\Simple.XChart.RoL.Common.csproj" />
+    <ProjectReference Include="..\Simple.XChart.SharedComponents\Simple.XChart.SharedComponents.csproj" />
   </ItemGroup>
 
   <ItemGroup>

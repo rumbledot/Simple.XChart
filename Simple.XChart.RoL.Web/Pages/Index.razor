@@ -2,13 +2,14 @@
 
 <PageTitle>Rule of Life</PageTitle>
 
+<HeroBannerComponent />
+@if (chart is not null)
+{
+    <div class="chart-filler"></div>
+    <div class="chart-title">@chart.Title</div>
+    <div class="chart-desc">@chart.Description</div>
+}
+
 <CascadingValue Value="chartId">
-    @if (chart is not null)
-    {
-    <div class="">
-        <h4>@chart.Title</h4>
-        <p>@chart.Description</p>
-    </div>
-    }
-    <VerticalTable/>
+    <TableComponent />
 </CascadingValue>

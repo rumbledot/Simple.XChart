@@ -61,32 +61,6 @@ public partial class PracticeComponent
         return cache.Get<IEnumerable<ChartOccurence>>("occurence");
     }
 
-    private void ToggleEditMode(PracticeActionViewModel action)
-    {
-        currentAction = action;
-
-        action.inEditMode = true;
-        newReflection = action.practiceAction;
-    }
-
-    private void CancelEditMode(PracticeActionViewModel action)
-    {
-        currentAction = null;
-
-        action.inEditMode = false;
-        newReflection = new MyAction();
-    }
-
-    private async Task UpdateAction()
-    {
-        await db.SavePracticeAction(newReflection);
-
-        currentAction.inEditMode = false;
-        newReflection = new MyAction();
-
-        await InvokeAsync(() => StateHasChanged());
-    }
-
     private async Task ViewMyPracticeDetails(int occurenceId)
     {
         Navigate.NavigateTo($"/practice/{practiceId}/{occurenceId}");

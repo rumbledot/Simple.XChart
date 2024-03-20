@@ -1,0 +1,30 @@
+﻿@page "/reflection/{practiceId}/{occurenceId}/{reflectionId}"
+
+<div class="cell-header" @onclick="BackTo">
+    <a><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+<div class="cell cell-3 cell-center">
+    <div class="cell-header-text text-lg">
+        @(practice is null ? "" : $" > {practice.Description}")
+    </div>
+</div>
+<div class="cell cell-4">
+    Reflection Verses
+</div>
+
+<EditForm Model="currentReflection" OnSubmit="Save" class="cell cell-4 cell-v cell-h4">
+    @if (currentReflection.Id > 0) 
+    { 
+        <label>Created @currentReflection.DateCreated.ToString("dd MMM yyyy HH:mm")</label>
+        <label>Last updated @currentReflection.DateUpdated?.ToString("dd MMM yyyy HH:mm")</label>
+    }
+    <label for="daily-title">Title</label>
+    <InputText id="daily-title" @bind-Value=currentReflection.Title />
+    <label for="daily-desc">Description</label>
+    <InputTextArea id="daily-desc" class="flex-exp" @bind-Value=currentReflection.Description />
+    <div class="cell-footer">
+        <button class="btn-sm">Save</button>
+        <button type="button" class="btn-sm" @onclick="SaveAndBack">Save And Back</button>
+        <button type="button" class="btn-sm btn-warn" @onclick="ClearNewReflection"><i class="fa-solid fa-xmark"></i> Clear</button>
+    </div>
+</EditForm>

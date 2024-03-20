@@ -247,4 +247,17 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
             throw;
         }
     }
+
+    public async Task<MyAction> GetAction(int id)
+    {
+        try
+        {
+            using var conn = GetConnection();
+            return await conn.QueryFirstOrDefaultAsync<MyAction>("SELECT * FROM MyActions WHERE Id=@id", new { id });
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }
