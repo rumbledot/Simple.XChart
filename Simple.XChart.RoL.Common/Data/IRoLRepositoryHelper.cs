@@ -1,7 +1,7 @@
 ﻿using Simple.XChart.RoL.Common.Entities;
 using Simple.XChart.RoL.Common.Models;
 
-namespace Simple.XChart.RoL.Common.Helpers
+namespace Simple.XChart.RoL.Common.Data
 {
     public interface IRoLRepositoryHelper
     {

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+﻿using SQLite;
+using System.ComponentModel.DataAnnotations;
 
 namespace Simple.XChart.RoL.Common.Entities;
 
+[Table("Verses")]
 public class AttachVerse
 {
     [Key]

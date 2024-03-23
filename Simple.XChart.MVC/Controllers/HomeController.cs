@@ -4,7 +4,6 @@ using Simple.XChart.MVC.Models;
 using Simple.XChart.MVC.Models.Views;
 using Simple.XChart.RoL.Common.Data;
 using Simple.XChart.RoL.Common.Entities;
-using Simple.XChart.RoL.Common.Helpers;
 using System.Diagnostics;
 using System.Drawing;
 

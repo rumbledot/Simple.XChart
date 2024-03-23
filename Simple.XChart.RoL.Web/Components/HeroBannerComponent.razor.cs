@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
+using Simple.XChart.RoL.Common.Data;
 using Simple.XChart.RoL.Common.Entities;
-using Simple.XChart.RoL.Common.Helpers;
 using Simple.XChart.RoL.Common.Services;
 using Simple.XChart.RoL.Web.Helpers;
 using System.Drawing;

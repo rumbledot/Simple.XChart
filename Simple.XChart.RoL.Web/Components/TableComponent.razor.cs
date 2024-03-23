@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Simple.XChart.RoL.Common.Data;
 using Simple.XChart.RoL.Common.Entities;
-using Simple.XChart.RoL.Common.Helpers;
 
 namespace Simple.XChart.RoL.Web.Components;
 

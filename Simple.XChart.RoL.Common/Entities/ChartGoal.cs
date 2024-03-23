@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Simple.XChart.RoL.Common.Entities;
 
+[Table("Goals")]
 public class ChartGoal
 {
     [Key]

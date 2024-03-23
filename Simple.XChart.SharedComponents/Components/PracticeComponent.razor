@@ -1,0 +1,15 @@
+﻿<div class="cell-header">
+    <div class="cell-header-text">
+        @(string.IsNullOrEmpty(practiceTitle) ? "" : practiceTitle)
+    </div>
+</div>
+@if (practiceActions != null && practiceActions.Count() > 0)
+{
+    foreach (PracticeActionViewModel action in practiceActions)
+    {
+    <div class="cell" @onclick="() => ViewMyPracticeDetails(action.occurence.Id)">
+        <div class="cell-title">@action.practiceAction.Title</div>
+        <div class="cell-desc">@action.practiceAction.Description</div>
+    </div>
+    }
+}

@@ -33,12 +33,12 @@ var connectionString = $"Data Source={databaseFile}";
 var verseService = new VerseService(new HttpClient { BaseAddress = new Uri(apiSettings.ApiUrls.Verse) });
 var pexelsService = new PexelsService(apiSettings.ApiKeys.Pexels);
 builder.Services.AddTransient(x =>
-    new RoLRepositoryHelper(connectionString, pexelsService, verseService, true)
+    new RoLRepositoryHelper(connectionString, pexelsService, verseService)
 );
 
 builder.Services.AddMemoryCache();
 
-builder.Services.AddScoped<JSHelper>();
+builder.Services.AddScoped<Simple.XChart.SharedComponents.Helpers.JSHelper>();
 
 var app = builder.Build();
 

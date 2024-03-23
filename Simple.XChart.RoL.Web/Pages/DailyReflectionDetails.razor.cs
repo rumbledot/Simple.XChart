@@ -1,15 +1,6 @@
-﻿using Dapper;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.JSInterop.Infrastructure;
+﻿using Microsoft.AspNetCore.Components;
 using Simple.XChart.RoL.Common.Data;
 using Simple.XChart.RoL.Common.Entities;
-using Simple.XChart.RoL.Common.Helpers;
-using Simple.XChart.RoL.Common.Services;
-using Simple.XChart.RoL.Web.Helpers;
-using Simple.XChart.RoL.Web.Models;
-using System.Collections.ObjectModel;
 
 namespace Simple.XChart.RoL.Web.Pages;
 
