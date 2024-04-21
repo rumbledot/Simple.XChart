@@ -10,7 +10,7 @@ namespace Simple.XChart.SharedComponents.Components;
 public partial class PracticeComponent
 {
     [Inject]
-    private RoLRepositoryHelper db { get; set; }
+    private IRoLRepositoryHelper db { get; set; }
     [Inject]
     private VerseService verseService { get; set; }
     [Inject]

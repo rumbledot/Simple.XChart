@@ -10,6 +10,7 @@ public class ApiItems
 {
     public string Verse { get; set; }
     public string Pexels { get; set; }
+    public string Bible { get; set; }
 }
 
 public class ConnectionSettings

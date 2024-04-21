@@ -7,7 +7,7 @@ namespace Simple.XChart.SharedComponents.Pages;
 public partial class DailyReflectionDetails
 {
     [Inject]
-    private RoLRepositoryHelper db { get; set; }
+    private IRoLRepositoryHelper db { get; set; }
     [Inject]
     public NavigationManager Navigate { get; set; }
 

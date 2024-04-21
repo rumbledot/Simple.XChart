@@ -1,0 +1,51 @@
+﻿@page "/charts"
+
+<div class="cell-header" @onclick="BackToMain">
+    <a><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="cell-header" @onclick="() => CraftChart(0)">
+    <div class="cell-header-text">
+        <a><i class="fa-solid fa-square-plus"></i> New</a>
+    </div>
+</div>
+
+<div class="cell cell-4">
+    <div class="cell-header-text text-lg">
+        Your Charts
+    </div>
+    <div class="cell-header-text">
+        @(ErrorMsg ?? "")
+    </div>
+</div>
+
+@if (charts is not null && charts.Any())
+{
+    foreach (var chart in charts)
+    {
+        <div class="cell-header">
+            <a @onclick="() => CraftChart(chart.Id)" class="large-screen">Review</a>
+            @if (!chart.Active)
+            {
+                <a @onclick="() => ActivateChart(chart.Id)" class="large-screen">Set Active</a>
+            }
+            <a @onclick="() => DeleteChart(chart.Id)" class="large-screen">Delete</a>
+        </div>
+        <div class="cell cell-3">
+            <div class="cell-text">
+                @chart.Title
+            </div>
+            <div class="cell-text">
+                @chart.Description
+            </div>
+            <div class="cell-text small-screen">
+                <button @onclick="() => CraftChart(chart.Id)" class="small-screen btn-sm btn-info">Review</button>
+                @if (!chart.Active)
+                {
+                    <button @onclick="() => ActivateChart(chart.Id)" class="small-screen btn-sm">Set Active</button>
+                }
+                <button @onclick="() => DeleteChart(chart.Id)" class="small-screen btn-sm btn-danger">Delete</button>
+            </div>
+        </div>
+    }
+}

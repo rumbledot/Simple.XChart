@@ -1,3 +1,41 @@
 ﻿<div class="top-bar">
-    <div class="top-bar-title">Rule Of Life</div>
+    <div class="top-bar-title">
+        <div class="top-bar-title-menu-toggle" @onclick="toggleMenu">
+            <i class="@toggleMenuIcon"></i>
+        </div>
+        <div class="top-bar-title-text">
+            Rule Of Life
+        </div>
+    </div>
+    <div class="@containerClass">
+        <ul>
+            <li>
+                <a @onclick="OpenChart">
+                    Your Chart
+                </a>
+            </li>
+            <li>
+                <a @onclick="OpenChartCrafter">
+                    Craft your own chart
+                </a>
+            </li>
+            <li>
+                <a @onclick="OpenCharts">
+                    Charts
+                </a>
+            </li>
+            <li><a>Bible</a></li>
+            <li><a @onclick="OpenAbout">About</a></li>
+            <li>
+                <a @onclick="OpenRoL">
+                Rule Of Life
+                </a>
+            </li>
+            <li>
+                <a @onclick="OpenPracticingTheWay">
+                Practicing The Way
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>

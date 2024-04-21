@@ -6,16 +6,18 @@
         typeof(Simple.XChart.SharedComponents.Components.FooterBarComponent).Assembly, 
         typeof(Simple.XChart.SharedComponents.Components.TableComponent).Assembly, 
         typeof(Simple.XChart.SharedComponents.Components.PracticeComponent).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Pages.MainLayout).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Pages.Index).Assembly, 
         typeof(Simple.XChart.SharedComponents.Pages.DailyReflectionDetails).Assembly, 
         typeof(Simple.XChart.SharedComponents.Pages.MyPracticeDetails).Assembly
 }">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Simple.XChart.SharedComponents.Pages.MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
     <NotFound>
         <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
+        <LayoutView Layout="@typeof(Simple.XChart.SharedComponents.Pages.MainLayout)">
             <p role="alert">Sorry, there's nothing at this address.</p>
         </LayoutView>
     </NotFound>

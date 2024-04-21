@@ -1,6 +1,18 @@
-﻿<Router AppAssembly="@typeof(MauiProgram).Assembly">
+﻿<Router AppAssembly="@typeof(MauiProgram).Assembly"
+AdditionalAssemblies="
+    new [] { 
+        typeof(Simple.XChart.SharedComponents.Components.TopBarComponent).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Components.HeroBannerComponent).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Components.FooterBarComponent).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Components.TableComponent).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Components.PracticeComponent).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Pages.MainLayout).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Pages.Index).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Pages.DailyReflectionDetails).Assembly, 
+        typeof(Simple.XChart.SharedComponents.Pages.MyPracticeDetails).Assembly
+}">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Simple.XChart.SharedComponents.Pages.MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
 </Router>

@@ -1,6 +1,5 @@
 using Simple.XChart.MVC.Models;
 using Simple.XChart.RoL.Common.Data;
-using Simple.XChart.RoL.Common.Helpers;
 using Simple.XChart.RoL.Common.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,10 +25,10 @@ var database = new RolDatabase(connectionSettings.DefaultConnection);
 var verseService = new VerseService(new HttpClient { BaseAddress = new Uri(apiSettings.ApiUrls.Verse) });
 var pexelsService = new PexelsService(apiSettings.ApiKeys.Pexels);
 builder.Services.AddScoped(x => 
-    new RoLRepositoryHelper(database, pexelsService, verseService)
+    new RoLRepositoryHelper(database, pexelsService, verseService).DatabaseInitialize()
 );
 
-builder.Services.AddLazyCache();
+object value = builder.Services.AddLazyCache();
 
 var app = builder.Build();
 

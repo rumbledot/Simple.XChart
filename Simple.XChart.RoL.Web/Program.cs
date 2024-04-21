@@ -1,15 +1,15 @@
 using Simple.XChart.RoL.Common.Data;
 using Simple.XChart.RoL.Common.Models;
-using Simple.XChart.RoL.Common.Helpers;
 using Simple.XChart.RoL.Common.Services;
-using Simple.XChart.RoL.Web.Helpers;
-using Simple.XChart.RoL.Web.Models;
+using Simple.XChart.SharedComponents.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+builder.Services.AddSingleton<StateHelper>();
 
 var connectionSettings = builder.Configuration.GetSection("ConnectionSettings").Get<ConnectionSettings>();
 builder.Services.AddSingleton(connectionSettings);
@@ -27,14 +27,14 @@ builder.Services.AddScoped(p =>
     new PexelsService(apiSettings.ApiKeys.Pexels)
     );
 
-var databaseFile = Path.Combine(Directory.GetCurrentDirectory(), connectionSettings.SqliteConnection);
-var connectionString = $"Data Source={databaseFile}";
+//var databaseFile = Path.Combine(Directory.GetCurrentDirectory(), connectionSettings.SqliteConnection);
+//var connectionString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "RoLDB.db");
 
 var verseService = new VerseService(new HttpClient { BaseAddress = new Uri(apiSettings.ApiUrls.Verse) });
 var pexelsService = new PexelsService(apiSettings.ApiKeys.Pexels);
-builder.Services.AddTransient(x =>
-    new RoLRepositoryHelper(connectionString, pexelsService, verseService)
-);
+var database = new RoLRepositoryHelper(connectionSettings.SqliteConnection, pexelsService, verseService);
+await database.DatabaseInitializeAsync();
+builder.Services.AddTransient<IRoLRepositoryHelper>(x => database);
 
 builder.Services.AddMemoryCache();
 

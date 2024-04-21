@@ -1,14 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SQLite;
 
 namespace Simple.XChart.RoL.Common.Entities;
 
 public class AppInformation
 {
-    [Key]
+    [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
-    [StringLength(200)]
     public string Code { get; set; }
-    [StringLength(200)]
     public string Information { get; set; }
     public DateTime DateUpdated { get; set; }
 }

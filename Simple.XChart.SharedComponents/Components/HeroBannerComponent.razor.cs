@@ -15,7 +15,7 @@ namespace Simple.XChart.SharedComponents.Components
         [Inject]
         private VerseService verseService { get; set; }
         [Inject]
-        public RoLRepositoryHelper db { get; set; }
+        private IRoLRepositoryHelper db { get; set; }
         [Inject]
         public JSHelper js { get; set; }
 

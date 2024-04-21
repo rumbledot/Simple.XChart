@@ -1,0 +1,109 @@
+﻿@page "/editChart"
+@page "/editChart/{chartId:int}"
+
+<div class="cell-header" @onclick="BackToMain">
+    <a><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+<div class="cell cell-3 cell-center">
+    <div class="cell-header-text text-lg">
+        @(chartId.HasValue ? "Edit Chart" : "New Chart")
+    </div>
+</div>
+
+<EditForm Model="activeChart" OnSubmit="Save" class="cell cell-4 cell-v cell-h2">
+    @if (activeChart.Id > 0)
+    {
+        <label>Created @activeChart.DateCreated.ToString("dd MMM yyyy HH:mm")</label>
+        <label>Last updated @activeChart.DateUpdated.ToString("dd MMM yyyy HH:mm")</label>
+    }
+    <label for="daily-title">Title</label>
+    <InputText id="daily-title" @bind-Value=activeChart.Title />
+    <label for="daily-desc">Description</label>
+    <InputTextArea id="daily-desc" class="flex-exp" @bind-Value=activeChart.Description />
+    <div class="cell-footer">
+        <button class="btn-sm">Save</button>
+    </div>
+</EditForm>
+
+@if (activeChart.Id > 0)
+{
+    <EditForm Model="currentGoal" OnSubmit="SaveGoal" class="cell cell-4">
+        <label for="goal-desc">Title</label>
+        <InputText id="goal-desc" @bind-Value=currentGoal.Description />
+        <div class="cell-footer">
+            <button class="btn-sm">Set Goal</button>
+        </div>
+    </EditForm>
+}
+@if(Goals is not null && Goals.Count() > 0)
+{
+    <div class="cell cell-4 cell-h2">
+        <table style="width: 100%;">
+            <caption>
+                My Goals with Jesus
+            </caption>
+            <thead>
+                <tr>
+                    <th>Your Goal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody style="overflow-y: auto">
+                @foreach (ChartGoal item in Goals)
+                {
+                    <tr>
+                        <td>
+                            @item.Description
+                        </td>
+                        <td>
+                            <button @onclick="()=>EditGoal(item.Id)">Edit</button>
+                            <button @onclick="()=>DeleteGoal(item.Id)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (currentGoal is not null && currentGoal.Id > 0)
+{
+    <EditForm Model="currentPractice" OnSubmit="SavePractice" class="cell cell-4">
+        <label for="goal-desc">Title</label>
+        <InputText id="goal-desc" @bind-Value=currentPractice.Description />
+        <div class="cell-footer">
+            <button class="btn-sm">Set My Practice</button>
+        </div>
+    </EditForm>
+}
+@if(Practices is not null && Practices.Count() >0)
+{
+    <div class="cell cell-4 cell-h2">
+        <table style="width: 100%;">
+            <caption>
+                @(string.IsNullOrEmpty(currentGoal.Description) ? "Chart practices" : $"{currentGoal.Description} practices")
+            </caption>
+            <thead>
+                <tr>
+                    <th>Your Practice</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody style="overflow-y: auto">
+                @foreach (ChartPractice item in Practices.OrderBy(x=>x.GoalId))
+                {
+                    
+                    <tr>
+                        <td>
+                            @item.Description
+                        </td>
+                        <td>
+                            <button @onclick="()=>EditPractice(item.Id)">Edit</button>
+                            <button @onclick="()=>DeletePractice(item.Id)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

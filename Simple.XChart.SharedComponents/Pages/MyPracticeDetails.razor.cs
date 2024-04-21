@@ -8,14 +8,14 @@ using Simple.XChart.SharedComponents.Models;
 
 namespace Simple.XChart.SharedComponents.Pages;
 
-public partial class MyPracticeDetails
+public partial class MyPracticeDetails : IDisposable
 {
     [Inject]
-    private RoLRepositoryHelper db { get; set; }
+    private IRoLRepositoryHelper db { get; set; }
     [Inject]
     private VerseService verseService { get; set; }
     [Inject]
-    public NavigationManager Navigate { get; set; }
+    public NavigationManager nav { get; set; }
     [Inject]
     public IMemoryCache cache { get; set; }
 
@@ -61,11 +61,11 @@ public partial class MyPracticeDetails
     {
         if(reflection is null) 
         {
-            Navigate.NavigateTo($"/reflection/{practiceId}/{occurenceId}/0");
+            nav.NavigateTo($"/reflection/{practiceId}/{occurenceId}/0");
             return;
         }
 
-        Navigate.NavigateTo($"/reflection/{practiceId}/{occurenceId}/{reflection.Id}");
+        nav.NavigateTo($"/reflection/{practiceId}/{occurenceId}/{reflection.Id}");
     }
 
     private async Task RefreshUI(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -86,7 +86,7 @@ public partial class MyPracticeDetails
 
     private void BackToMain()
     {
-        Navigate.NavigateTo("/");
+        nav.NavigateTo("/");
     }
 
     private async Task DeleteReflection(ReflectionComponentViewModel reflectionVM)
@@ -113,5 +113,15 @@ public partial class MyPracticeDetails
             selectedOccurence = occurences.FirstOrDefault(x => x.Id == occurenceIdInt);
             actions.InsertRange(practiceVM.reflections.Where(x => x.reflection.OccurenceId == occurenceIdInt));
         }
+    }
+
+    public void Dispose()
+    {
+        practiceActions.CollectionChanged -= async (s, e) => await RefreshUI(s, e);
+        practiceActions.Clear();
+        practiceActions = null;
+        actions.CollectionChanged -= async (s, e) => await RefreshUI(s, e);
+        actions.Clear();
+        actions = null;
     }
 }

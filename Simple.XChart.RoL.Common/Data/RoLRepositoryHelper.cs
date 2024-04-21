@@ -3,12 +3,14 @@ using SQLite;
 using Simple.XChart.RoL.Common.Entities;
 using Simple.XChart.RoL.Common.Models;
 using Simple.XChart.RoL.Common.Services;
+using Simple.XChart.RoL.Common.Data;
 
 namespace Simple.XChart.RoL.Common.Data;
 
 public class RoLRepositoryHelper : IRoLRepositoryHelper
 {
     private readonly string connectionString;
+    private readonly string databasepath;
     private readonly PexelsService pexelsService;
     private readonly VerseService verseService;
 
@@ -21,26 +23,152 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
         this.connectionString = connectionString;
         pexelsService = pexelService;
         this.verseService = verseService;
+        //databasepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "RoLDB.db");
+        databasepath = connectionString;
     }
 
-    private async Task<SQLiteAsyncConnection> GetConnection()
+    public void DatabaseInitialize()
     {
-        if(connection is null) 
+        if (File.Exists(databasepath))
         {
-            await DatabaseInitialize();
+            connection = new SQLiteAsyncConnection(databasepath);
+            return;
         }
 
-        return connection;
+        try
+        {
+            var connection = new SQLiteConnection(databasepath);
+
+            connection.CreateTable<AppInformation>();
+            connection.CreateTable<AttachVerse>();
+            connection.CreateTable<BannerImage>();
+            connection.CreateTable<Chart>();
+            connection.CreateTable<ChartGoal>();
+            connection.CreateTable<ChartOccurence>();
+            connection.CreateTable<ChartPractice>();
+            connection.CreateTable<MyAction>();
+
+            var appInformation = new AppInformation
+            {
+                Code = "PhotoTheme",
+                Information = "Natural Landscape",
+                DateUpdated = DateTime.Now,
+            };
+            connection.Insert(appInformation);
+
+            var chart = new Chart
+            {
+                Title = "Lent",
+                Description = "Guide to Easter",
+                DateCreated = DateTime.Now,
+                DateUpdated = DateTime.Now,
+                Active = false
+            };
+            connection.Insert(chart);
+
+            var goals = new List<ChartGoal>()
+            {
+                new ChartGoal {
+                    Description = "Be With Jesus",
+                    ChartId = 1
+                },
+                new ChartGoal {
+                    Description = "Become Like Jesus",
+                    ChartId = 1
+                },
+                new ChartGoal {
+                    Description = "Do what Jesus did",
+                    ChartId = 1
+                },
+            };
+            connection.InsertAll(goals);
+
+            var occurences = new List<ChartOccurence>()
+            {
+                new ChartOccurence
+                {
+                    Description ="Daily",
+                    DaysCount = 1,
+                },
+                new ChartOccurence
+                {
+                    Description ="Weekly",
+                    DaysCount = 7,
+                },
+                new ChartOccurence
+                {
+                    Description ="Montly",
+                    DaysCount = 30,
+                },
+            };
+            connection.InsertAll(occurences);
+
+            var practices = new List<ChartPractice>()
+            {
+                new ChartPractice
+                {
+                    Description = "Silence & Solitude",
+                    GoalId = 1,
+                },
+                new ChartPractice
+                {
+                    Description = "Scripture",
+                    GoalId = 1,
+                },
+                new ChartPractice
+                {
+                    Description = "Prayer",
+                    GoalId = 1,
+                },
+                new ChartPractice
+                {
+                    Description = "Community",
+                    GoalId = 2,
+                },
+                new ChartPractice
+                {
+                    Description = "Sabbath",
+                    GoalId = 2,
+                },
+                new ChartPractice
+                {
+                    Description = "Vocation",
+                    GoalId = 3,
+                },
+                new ChartPractice
+                {
+                    Description = "Hospitality",
+                    GoalId = 3,
+                },
+                new ChartPractice
+                {
+                    Description = "Simplicity",
+                    GoalId = 3,
+                },
+            };
+            connection.InsertAll(practices);
+            connection.Dispose();
+
+            this.connection = new SQLiteAsyncConnection(databasepath);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
-    private async Task DatabaseInitialize()
+    public async Task DatabaseInitializeAsync()
     {
-        var databasepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "RoLDB.db");
-
-        connection = new SQLiteAsyncConnection(databasepath);
-
-        if (!File.Exists(databasepath))
+        if (File.Exists(databasepath))
         {
+            connection = new SQLiteAsyncConnection(databasepath);
+            return;
+        }
+
+        try
+        {
+            connection = new SQLiteAsyncConnection(databasepath);
+
             await connection.CreateTableAsync<AppInformation>();
             await connection.CreateTableAsync<AttachVerse>();
             await connection.CreateTableAsync<BannerImage>();
@@ -58,16 +186,16 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
             };
             await connection.InsertAsync(appInformation);
 
-            var chart = new Chart 
-            { 
+            var chart = new Chart
+            {
                 Title = "Lent",
                 Description = "Guide to Easter",
-                DateStart = DateTime.Now,
-                DateEnd = DateTime.Now.AddDays(180),
+                DateCreated = DateTime.Now,
+                DateUpdated = DateTime.Now,
             };
             await connection.InsertAsync(chart);
 
-            var goals = new List<ChartGoal>() 
+            var goals = new List<ChartGoal>()
             {
                 new ChartGoal {
                     Description = "Be With Jesus",
@@ -84,7 +212,7 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
             };
             await connection.InsertAllAsync(goals);
 
-            var occurences = new List<ChartOccurence>() 
+            var occurences = new List<ChartOccurence>()
             {
                 new ChartOccurence
                 {
@@ -104,7 +232,7 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
             };
             await connection.InsertAllAsync(occurences);
 
-            var practices = new List<ChartPractice>() 
+            var practices = new List<ChartPractice>()
             {
                 new ChartPractice
                 {
@@ -149,16 +277,20 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
             };
             await connection.InsertAllAsync(practices);
         }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public async Task<string?> GetAppInformationValue(string code)
     {
-        return (await (await GetConnection()).Table<AppInformation>().FirstOrDefaultAsync(x => x.Code.Equals(code)))?.Information ?? "";
+        return (await connection.Table<AppInformation>().FirstOrDefaultAsync(x => x.Code.Equals(code)))?.Information ?? "";
     }
 
     public async Task<AppInformation?> GetAppInformation(string code)
     {
-        return await (await GetConnection()).Table<AppInformation>().FirstOrDefaultAsync(x => x.Code.Equals(code));
+        return await connection.Table<AppInformation>().FirstOrDefaultAsync(x => x.Code.Equals(code));
     }
 
     public async Task SaveAppInformation(string code, string info)
@@ -168,7 +300,7 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
         {
             existing.Information = info;
             existing.DateUpdated = DateTime.Now;
-            await (await GetConnection()).UpdateAsync(existing);
+            await connection.UpdateAsync(existing);
 
             return;
         }
@@ -177,30 +309,29 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
         existing.Code = code;
         existing.Information = info;
         existing.DateUpdated = DateTime.Now;
-        await (await GetConnection()).InsertAsync(existing);
+        await connection.InsertAsync(existing);
     }
 
     public async Task<BannerImage> TryGetBannerImage()
     {
         try
         {
-
             var random = new Random(DateTime.Now.Millisecond);
             int idx = 0;
 
-            var bannerIds = (await (await GetConnection()).Table<BannerImage>().ToListAsync()).Select(x => x.Id);
+            var bannerIds = (await connection.Table<BannerImage>().ToListAsync()).Select(x => x.Id);
             if (bannerIds is not null && bannerIds.Count() > 0)
             {
                 idx = random.Next(0, bannerIds.Count() - 1);
                 var id = bannerIds.ElementAt(idx);
-                return await (await GetConnection()).Table<BannerImage>().FirstOrDefaultAsync(x => x.Id == id);
+                return await connection.Table<BannerImage>().FirstOrDefaultAsync(x => x.Id == id);
             }
 
             var photoTheme = await GetAppInformationValue("PhotoTheme");
             var bannerImages = await pexelsService.GetBannerImages(string.IsNullOrEmpty(photoTheme) ? "Nature" : photoTheme);
             foreach (var bannerImage in bannerImages)
             {
-                await (await GetConnection()).InsertAsync(bannerImage);
+                await connection.InsertAsync(bannerImage);
             }
 
             idx = random.Next(0, bannerImages.Count() - 1);
@@ -233,7 +364,7 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
 
             return await GetTodayVerse();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -242,7 +373,7 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
     public async Task<AttachVerse> GetTodayVerse()
     {
 
-        return await (await GetConnection()).Table<AttachVerse>().FirstOrDefaultAsync(x => x.MyActionId == -1);
+        return await connection.Table<AttachVerse>().FirstOrDefaultAsync(x => x.MyActionId == -1);
     }
 
     public async Task UpdateTodayVerse(TodayVerse verse)
@@ -262,7 +393,7 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
                     BibleId = verse.details.version,
                     MyActionId = -1
                 };
-                await (await GetConnection()).InsertAsync(attachVerse);
+                await connection.InsertAsync(attachVerse);
 
                 return;
             }
@@ -270,7 +401,7 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
             todayVerse.Text = verse.details.text;
             todayVerse.VerseId = verse.details.reference;
             todayVerse.BibleId = verse.details.version;
-            await (await GetConnection()).UpdateAsync(todayVerse);
+            await connection.UpdateAsync(todayVerse);
         }
         catch (Exception)
         {
@@ -281,43 +412,104 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
     public async Task<Chart> GetActiveChart()
     {
 
-        return await (await GetConnection()).Table<Chart>().FirstOrDefaultAsync(x => x.Id == 1);
+        return await connection.Table<Chart>().FirstOrDefaultAsync(x => x.Id == 1);
     }
 
-    public async Task<Chart> GetChart(int id)
+    public async Task SetActiveChart(int id) 
     {
+        var chart = await connection.Table<Chart>().FirstOrDefaultAsync(x => x.Id == id);
+        if (chart is null)
+        {
+            return;
+        }
 
-        return await (await GetConnection()).Table<Chart>().FirstOrDefaultAsync(x => x.Id == id);
+        var charts = await connection.Table<Chart>().ToListAsync();
+        charts.ForEach(x => x.Active = false);
+        await connection.UpdateAllAsync(charts);
+
+        chart.Active = true;
+        await connection.UpdateAsync(chart);
+    }
+
+    public async Task<IEnumerable<Chart>> GetAllCharts()
+    {
+        return await connection.Table<Chart>().ToListAsync();
+    }
+
+    public async Task<Chart> GetChart(int? id)
+    {
+        if (id.HasValue && id.Value > 0)
+        {
+            return await connection.Table<Chart>().FirstOrDefaultAsync(x => x.Id == id.Value);
+        }
+
+        return await connection.Table<Chart>().OrderBy(x => x.DateUpdated).FirstOrDefaultAsync(x => x.Active);
+    }
+
+    public async Task DeleteChart(int id)
+    {
+        var exist = await connection.Table<Chart>().FirstOrDefaultAsync(x => x.Id == id);
+        if (exist is null)
+        {
+            return;
+        }
+
+        await connection.DeleteAsync(exist);
+    }
+
+    public async Task<Chart> SaveChart(Chart chart)
+    {
+        try
+        {
+            if (chart.Id <= 0)
+            {
+                await connection.InsertAsync(chart);
+            }
+            else
+            {
+                await connection.UpdateAsync(chart);
+            }
+
+            return chart;
+        }
+        catch (Exception ex)
+        {
+            return chart;
+        }
     }
 
     public async Task<IEnumerable<ChartOccurence>> GetOccurences()
     {
 
-        return await (await GetConnection()).Table<ChartOccurence>().ToListAsync();
+        return await connection.Table<ChartOccurence>().ToListAsync();
+    }
+
+    public async Task<IEnumerable<ChartPractice>> GetGoalPractices(int goalId)
+    {
+        return await connection.Table<ChartPractice>().Where(x => x.GoalId == goalId).ToListAsync();
     }
 
     public async Task<IEnumerable<ChartPractice>> GetChartPractices(int id)
     {
-
-        var goalIds = (await (await GetConnection()).Table<ChartGoal>().Where(x => x.ChartId == id).ToListAsync()).Select(x => x.Id);
-        return await (await GetConnection()).Table<ChartPractice>().Where(x => goalIds.Contains(x.GoalId)).ToListAsync();
+        var goalIds = (await connection.Table<ChartGoal>().Where(x => x.ChartId == id).ToListAsync()).Select(x => x.Id);
+        return await connection.Table<ChartPractice>().Where(x => goalIds.Contains(x.GoalId)).ToListAsync();
     }
 
     public async Task<ChartPractice> GetPractice(int id)
     {
 
-        return await (await GetConnection()).Table<ChartPractice>().FirstOrDefaultAsync(x => x.Id == id);
+        return await connection.Table<ChartPractice>().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<IEnumerable<MyAction>> GetPracticeFirstAction(int id)
     {
 
-        return await (await GetConnection()).Table<MyAction>().Where(x => x.Id == id).OrderBy(x => x.DateCreated).ToListAsync();
+        return await connection.Table<MyAction>().Where(x => x.PracticeId == id).OrderBy(x => x.DateCreated).ToListAsync();
     }
 
     public async Task<IEnumerable<MyAction>> GetPracticeActions(int id)
     {
-        return await (await GetConnection()).Table<MyAction>().Where(x => x.PracticeId == id).ToListAsync();
+        return await connection.Table<MyAction>().Where(x => x.PracticeId == id).ToListAsync();
     }
 
     public async Task SavePracticeAction(MyAction action)
@@ -329,13 +521,13 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
             {
                 action.DateCreated = DateTime.Now;
                 action.DateUpdated = DateTime.Now;
-                await (await GetConnection()).InsertAsync(action);
+                await connection.InsertAsync(action);
 
                 return;
             }
 
             action.DateUpdated = DateTime.Now;
-            await (await GetConnection()).UpdateAsync(action);
+            await connection.UpdateAsync(action);
         }
         catch (Exception)
         {
@@ -348,7 +540,7 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
         try
         {
 
-            await (await GetConnection()).Table<MyAction>().DeleteAsync(x => x.Id == id);
+            await connection.Table<MyAction>().DeleteAsync(x => x.Id == id);
         }
         catch (Exception)
         {
@@ -361,11 +553,67 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
         try
         {
 
-            return await (await GetConnection()).Table<MyAction>().FirstOrDefaultAsync(x => x.Id == id);
+            return await connection.Table<MyAction>().FirstOrDefaultAsync(x => x.Id == id);
         }
         catch (Exception)
         {
             throw;
+        }
+    }
+
+    public async Task<ChartPractice> SavePractice(ChartPractice practice)
+    {
+        if (practice.Id <= 0)
+        {
+            await connection.InsertAsync(practice);
+        }
+        else
+        {
+            await connection.UpdateAsync(practice);
+        }
+
+        return practice;
+    }
+
+    public async Task DeletePractice(int practiceId)
+    {
+        var exist = await connection.Table<ChartPractice>().FirstOrDefaultAsync(x => x.Id == practiceId);
+        if (exist is not null)
+        {
+            await connection.DeleteAsync(exist);
+        }
+    }
+
+    public async Task<ChartGoal> SaveGoal(ChartGoal goal)
+    {
+        if (goal.Id <= 0)
+        {
+            await connection.InsertAsync(goal);
+        }
+        else
+        {
+            await connection.UpdateAsync(goal);
+        }
+
+        return goal;
+    }
+
+    public async Task<IEnumerable<ChartGoal>> GetChartGoals(int chartId)
+    {
+        return await connection.Table<ChartGoal>().Where(x=>x.ChartId == chartId).ToListAsync();
+    }
+
+    public async Task<ChartGoal> GetGoal(int goalId)
+    {
+        return await connection.Table<ChartGoal>().FirstOrDefaultAsync(x => x.Id == goalId);
+    }
+
+    public async Task DeleteGoal(int goalId)
+    {
+        var exist = await connection.Table<ChartGoal>().FirstOrDefaultAsync(x => x.Id == goalId);
+        if (exist is not null)
+        {
+            await connection.DeleteAsync(exist);
         }
     }
 }

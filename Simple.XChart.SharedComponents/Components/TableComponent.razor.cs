@@ -7,7 +7,7 @@ namespace Simple.XChart.SharedComponents.Components;
 public partial class TableComponent
 {
     [Inject]
-    public RoLRepositoryHelper db { get; set; }
+    private IRoLRepositoryHelper db { get; set; }
 
     [CascadingParameter]
     public int chartId { get; set; }
