@@ -30,13 +30,6 @@
         display: none;
     }
 
-    .hero-banner {
-        grid-row-start: 1;
-        grid-row-end: 3;
-        grid-column-start: 1;
-        grid-column-end: 5;
-    }
-
     .chart-filler {
         display: none;
     }

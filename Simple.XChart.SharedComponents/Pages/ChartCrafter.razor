@@ -34,76 +34,79 @@
             <button class="btn-sm">Set Goal</button>
         </div>
     </EditForm>
+
+    @if (currentGoal is not null && currentGoal.Id > 0)
+    {
+        <EditForm Model="currentPractice" OnSubmit="SavePractice" class="cell cell-4">
+            <label for="goal-desc">Title</label>
+            <InputText id="goal-desc" @bind-Value=currentPractice.Description />
+            <div class="cell-footer">
+                <button class="btn-sm">Set My Practice</button>
+            </div>
+        </EditForm>
+    }
 }
 @if(Goals is not null && Goals.Count() > 0)
 {
-    <div class="cell cell-4 cell-h2">
-        <table style="width: 100%;">
-            <caption>
-                My Goals with Jesus
-            </caption>
-            <thead>
-                <tr>
-                    <th>Your Goal</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody style="overflow-y: auto">
-                @foreach (ChartGoal item in Goals)
-                {
+    @foreach (ChartGoalViewModel item in Goals)
+    {
+        <div class="cell cell-4 cell-h2">
+            <p>@item.Goal.Description</p>
+            @if (item.IsAddNewPractice)
+            {
+                <label for=""></label>
+                <input @bind-value="newPractice"/>
+                <button @onclick="()=>AddGoalPractice(item)">Save</button>
+                <button @onclick="()=>AddGoalPracticeToggle(item)">Cancel</button>
+            }
+            else
+            {
+                <button @onclick="()=>AddGoalPracticeToggle(item)">Add Practice</button>
+            }
+            <button @onclick="()=>EditGoal(item)">Edit</button>
+            <button @onclick="()=>DeleteGoal(item.Goal.Id)">Delete</button>
+            @if(Practices is not null){
+                var goalPractices = Practices.Where(x => x.Practice.GoalId == item.Goal.Id).OrderBy(x => x.Practice.GoalId);
+                if (goalPractices is not null && goalPractices.Count() > 0) 
+                { 
+                <table style="width: 100%;">
+                <thead>
                     <tr>
-                        <td>
-                            @item.Description
-                        </td>
-                        <td>
-                            <button @onclick="()=>EditGoal(item.Id)">Edit</button>
-                            <button @onclick="()=>DeleteGoal(item.Id)">Delete</button>
-                        </td>
+                        <th colspan="2">Practices</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
-
-@if (currentGoal is not null && currentGoal.Id > 0)
-{
-    <EditForm Model="currentPractice" OnSubmit="SavePractice" class="cell cell-4">
-        <label for="goal-desc">Title</label>
-        <InputText id="goal-desc" @bind-Value=currentPractice.Description />
-        <div class="cell-footer">
-            <button class="btn-sm">Set My Practice</button>
+                </thead>
+                <tbody style="overflow-y: auto">
+                    @foreach (ChartPracticeViewModel practice in goalPractices)
+                    {
+                        <tr>
+                            <td>
+                                @if(practice.IsEditing)
+                                {
+                                <input @bind-value="newPractice"/>
+                                }
+                                else 
+                                {
+                                @practice.Practice.Description
+                                }
+                            </td>
+                            <td>
+                                @if(practice.IsEditing)
+                                {
+                                <button @onclick="()=>SavePractice()">Save</button>
+                                <button @onclick="()=>EditPractice(practice)">Cancel</button>
+                                }
+                                else 
+                                {
+                                <button @onclick="()=>EditPractice(practice)">Edit</button>
+                                }
+                                <button class="btn-warning" @onclick="()=>DeletePractice(practice.Practice.Id)">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            }
+            }
         </div>
-    </EditForm>
-}
-@if(Practices is not null && Practices.Count() >0)
-{
-    <div class="cell cell-4 cell-h2">
-        <table style="width: 100%;">
-            <caption>
-                @(string.IsNullOrEmpty(currentGoal.Description) ? "Chart practices" : $"{currentGoal.Description} practices")
-            </caption>
-            <thead>
-                <tr>
-                    <th>Your Practice</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody style="overflow-y: auto">
-                @foreach (ChartPractice item in Practices.OrderBy(x=>x.GoalId))
-                {
-                    
-                    <tr>
-                        <td>
-                            @item.Description
-                        </td>
-                        <td>
-                            <button @onclick="()=>EditPractice(item.Id)">Edit</button>
-                            <button @onclick="()=>DeletePractice(item.Id)">Delete</button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+    }
 }

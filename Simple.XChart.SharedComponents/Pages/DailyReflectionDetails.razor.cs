@@ -29,35 +29,30 @@ public partial class DailyReflectionDetails
     public async override Task SetParametersAsync(ParameterView parameters)
     {
         await base.SetParametersAsync(parameters);
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
         currentReflection = new MyAction();
         int id = 0;
-        if(int.TryParse(practiceId,out id)) 
+        if (int.TryParse(practiceId, out id))
         {
             practiceIdInt = id;
             currentReflection.PracticeId = practiceIdInt;
             practice = await db.GetPractice(practiceIdInt);
         }
 
-        if(int.TryParse(occurenceId, out id)) 
+        if (int.TryParse(occurenceId, out id))
         {
             occurenceIdInt = id;
             currentReflection.OccurenceId = occurenceIdInt;
         }
 
-
-        if (!string.IsNullOrEmpty(reflectionId) && int.TryParse(reflectionId, out id)) 
+        if (!string.IsNullOrEmpty(reflectionId) && int.TryParse(reflectionId, out id))
         {
             reflectionIdInt = id;
-            if (id > 0)
-            {
-                currentReflection = await db.GetAction(reflectionIdInt);
-            }
+            currentReflection = await db.GetAction(reflectionIdInt);
         }
-    }
-
-    protected async override Task OnInitializedAsync()
-    {
-        
     }
 
     private async Task Save()

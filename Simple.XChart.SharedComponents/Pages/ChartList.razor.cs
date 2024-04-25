@@ -71,6 +71,7 @@ public partial class ChartList : IDisposable
     private async void DeleteChart(int id) 
     {
         await db.DeleteChart(id);
+        await LoadCharts();
     }
 
     private async Task RefreshUI(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

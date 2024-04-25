@@ -20,14 +20,14 @@ namespace Simple.XChart.SharedComponents.Components
         public JSHelper js { get; set; }
 
         public BannerImage bannerImage { get; set; }
-        public DateTime todaysDate { get; set; }
         private AttachVerse todaysVerse { get; set; }
+        private Chart activeChart { get; set; }
         private string colorContrast { get; set; }
 
 
         protected async override Task OnInitializedAsync()
         {
-            todaysDate = DateTime.Now;
+            activeChart = await db.GetChart(null);
 
             await GetBannerImageAsync();
             await GetTodaysVerseAsync();

@@ -33,6 +33,12 @@ public partial class TopBarComponent
         nav.NavigateTo("/editChart");
     }
 
+    private void OpenBible()
+    {
+        toggleMenu();
+        //nav.NavigateTo("/charts");
+    }
+
     private void OpenCharts()
     {
         toggleMenu();

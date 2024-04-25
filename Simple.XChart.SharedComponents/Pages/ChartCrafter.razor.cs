@@ -2,6 +2,7 @@
 using Simple.XChart.RoL.Common.Data;
 using Simple.XChart.RoL.Common.Entities;
 using Simple.XChart.SharedComponents.Helpers;
+using Simple.XChart.SharedComponents.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,10 +25,12 @@ public partial class ChartCrafter : IDisposable
     public int? chartId { get; set; }
 
     public Chart activeChart { get; set; }
-    public RangeEnabledObservableCollection<ChartGoal> Goals { get; set; }
-    public RangeEnabledObservableCollection<ChartPractice> Practices { get; set; }
+    public RangeEnabledObservableCollection<ChartGoalViewModel> Goals { get; set; }
+    public RangeEnabledObservableCollection<ChartPracticeViewModel> Practices { get; set; }
     public ChartGoal currentGoal { get; set; }
     public ChartPractice currentPractice { get; set; }
+    public string newGoal { get; set; }
+    public string newPractice { get; set; }
 
     private int listGoalId;
 
@@ -36,27 +39,48 @@ public partial class ChartCrafter : IDisposable
         activeChart = new Chart();
         currentGoal = new ChartGoal();
         currentPractice = new ChartPractice();
-        Goals = new RangeEnabledObservableCollection<ChartGoal>();
-        Goals.CollectionChanged += async (s, e) => await RefreshUI(s, e);
-
-        Practices = new RangeEnabledObservableCollection<ChartPractice>();
-        Practices.CollectionChanged += async (s, e) => await RefreshUI(s, e);
 
         if (chartId.HasValue && chartId > 0)
         {
             activeChart = await db.GetChart(chartId.Value);
+        }
 
-            var chartGoals = await db.GetChartGoals(chartId.Value);
-            if (chartGoals is not null && chartGoals.Count() > 0)
-            {
-                Goals.InsertRange(chartGoals);
-            }
+        Goals = new RangeEnabledObservableCollection<ChartGoalViewModel>();
+        Goals.CollectionChanged += async (s, e) => await RefreshUI(s, e);
+        await LoadGoals();
 
-            var chartPractices = await db.GetChartPractices(chartId.Value);
-            if (chartPractices is not null && chartPractices.Count() > 0)
-            {
-                Practices.InsertRange(chartPractices);
-            }
+        Practices = new RangeEnabledObservableCollection<ChartPracticeViewModel>();
+        Practices.CollectionChanged += async (s, e) => await RefreshUI(s, e);
+        await LoadPractices();
+    }
+
+    private async Task LoadGoals()
+    {
+        if (!chartId.HasValue || chartId <= 0)
+        {
+            return;
+        }
+
+        var chartGoals = await db.GetChartGoals(chartId.Value);
+        if (chartGoals is not null && chartGoals.Count() > 0)
+        {
+            Goals.Clear();
+            Goals.InsertRange(chartGoals.Select(x => new ChartGoalViewModel { Goal = x, IsEditing = false }));
+        }
+    }
+
+    private async Task LoadPractices()
+    {
+        if (!chartId.HasValue || chartId <= 0)
+        {
+            return;
+        }
+
+        var chartPractices = await db.GetChartPractices(chartId.Value);
+        if (chartPractices is not null && chartPractices.Count() > 0)
+        {
+            Practices.Clear();
+            Practices.InsertRange(chartPractices.Select(x => new ChartPracticeViewModel { Practice = x, IsEditing = false }));
         }
     }
 
@@ -83,42 +107,71 @@ public partial class ChartCrafter : IDisposable
             currentGoal.ChartId = chartId.Value;
             currentGoal = await db.SaveGoal(currentGoal);
 
-            Goals.Add(currentGoal);
+            Goals.Add(new ChartGoalViewModel { Goal = currentGoal, IsEditing = false });
         }
     }
 
-    private async Task EditGoal(int id)
+    private async Task EditGoal(ChartGoalViewModel goal)
     {
-        currentGoal = await db.GetGoal(id);
-        Practices.Clear();
-        var goalPractices = await db.GetGoalPractices(id);
-        Practices.InsertRange(goalPractices);
+        currentGoal = null;
+        newGoal = "";
+        goal.IsEditing = !goal.IsEditing;
+        if (goal.IsEditing)
+        {
+            newGoal = goal.Goal.Description;
+            currentGoal = goal.Goal;
+        }
+    }
+
+    private void AddGoalPracticeToggle(ChartGoalViewModel goal)
+    {
+        newPractice = "";
+        goal.IsAddNewPractice = !goal.IsAddNewPractice;
+    }
+
+    private async Task AddGoalPractice(ChartGoalViewModel goal)
+    {
+        currentPractice.GoalId = goal.Goal.Id;
+        currentPractice.Description = newPractice;
+        currentPractice = await db.SavePractice(currentPractice);
+
+        goal.IsAddNewPractice = false;
+        newPractice = "";
+
+        await LoadPractices();
     }
 
     private async Task DeleteGoal(int id)
     {
         await db.DeleteGoal(id);
+        await LoadGoals();
+        await LoadPractices();
     }
 
     private async Task SavePractice()
     {
-        if (currentGoal.Id > 0)
-        {
-            currentPractice.GoalId = currentGoal.Id;
-            currentPractice = await db.SavePractice(currentPractice);
+        currentPractice.Description = newPractice;
+        currentPractice = await db.SavePractice(currentPractice);
 
-            Practices.Add(currentPractice);
-        }
+        await LoadPractices();
     }
 
-    private async Task EditPractice(int id)
+    private async Task EditPractice(ChartPracticeViewModel practice)
     {
-        currentPractice = await db.GetPractice(id);
+        currentPractice = null;
+        newPractice = "";
+        practice.IsEditing = !practice.IsEditing;
+        if (practice.IsEditing)
+        {
+            newPractice = practice.Practice.Description;
+            currentPractice = practice.Practice;
+        }
     }
 
     private async Task DeletePractice(int id)
     {
         await db.DeletePractice(id);
+        await LoadPractices();
     }
 
     private async Task RefreshUI(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

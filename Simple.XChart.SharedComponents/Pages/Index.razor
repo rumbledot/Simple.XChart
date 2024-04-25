@@ -3,13 +3,7 @@
 
 <PageTitle>Rule of Life (shared)</PageTitle>
 
-<Simple.XChart.SharedComponents.Components.HeroBannerComponent />
-@if (chart is not null)
-{
-    <div class="chart-title">@chart.Title</div>
-    <div class="chart-desc">@chart.Description</div>
-}
-
 <CascadingValue Value="activeChartId">
+    <Simple.XChart.SharedComponents.Components.HeroBannerComponent />
     <Simple.XChart.SharedComponents.Components.TableComponent />
 </CascadingValue>

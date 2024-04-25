@@ -64,6 +64,10 @@
 }
 
 .hero-banner {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    grid-column-start: 1;
+    grid-column-end: 5;
     display: flex;
     flex-direction: column;
     border-radius: 5px;
@@ -72,6 +76,10 @@
 .hero-banner-heading {
     flex-grow: 1;
 }
+
+    .hero-banner-heading > div {
+        padding: 0 50px;
+    }
 
 .hero-banner-title-link {
     text-align: right;

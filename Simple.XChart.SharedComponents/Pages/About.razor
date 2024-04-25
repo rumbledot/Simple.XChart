@@ -1,20 +1,44 @@
 ﻿@page "/about"
+<div class="cell-header" @onclick="BackToMain">
+    <a><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+<div class="cell cell-3 cell-center">
+    <div class="cell-header-text text-lg">
+        About
+    </div>
+</div>
 
 <div class="cell cell-4 cell-h4">
-    <h3>About</h3>
-    <h4>Disclaimer</h4>
-    <p>I am not the author/creator of Rule of Life chart</p>
-    <p>This app is developed as a hobby of mine and as an experiment.</p>
-    <h4>Privacy Notice</h4>
-    <p>This application does not collect and store any personal data in any way.</p>
-    <p>Every data created in this application is stored locally in user's device</p>
-    <p>A third party Api used to get Today's reading, Bible and banner pictures.</p>
-    <p>Api providers:</p>
+    <h3 class="cell-center">About</h3>
+    <br/>
     <p>
-        <ul>
-            <li><a href="https://scripture.api.bible/" target="_blank">API.Bible</a></li>
-            <li><a href="https://www.pexels.com/" target="_blank">Pexels stock photos</a></li>
-            <li><a href="https://ourmanna.readme.io/reference/getting-started-with-your-api" target="_blank">Our Manna daily verse</a></li>
-        </ul>
+        This app was inspired by Lent month long reflection and Rule Of Life hard copy handed at St.John in the City church.
     </p>
+    <br/>
+    <h5>Disclaimer</h5>
+    <p>I am not the author/creator of Rule of Life chart.</p>
+    <p>This app is developed as a hobby and experimentation on Blazor .NET8.</p>
+    <br />
+    <h5>Privacy Notice</h5>
+    <p>This application does not collect and store any personal data in any way.</p>
+    <p>Any data created by user (reflection entry, chart related attributes) are stored locally on user's device.</p>
+    <p>Third party Apis used to get Today's reading, Bible and hero banner background pictures.</p>
+    <br />
+    <h5>Third Party Api providers</h5>
+    <ul>
+        <li><i class="fa-solid fa-circle-chevron-right"></i><a href="https://scripture.api.bible/" target="_blank">API.Bible</a></li>
+        <li><i class="fa-solid fa-circle-chevron-right"></i><a href="https://www.pexels.com/" target="_blank">Pexels stock photos</a></li>
+        <li><i class="fa-solid fa-circle-chevron-right"></i><a href="https://ourmanna.readme.io/reference/getting-started-with-your-api" target="_blank">Our Manna daily verse</a></li>
+    </ul>
+    
 </div>
+
+@code {
+    [Inject]
+    public NavigationManager nav { get; set; }
+
+    private void BackToMain()
+    {
+        nav.NavigateTo("/");
+    }
+}

@@ -463,10 +463,13 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
         {
             if (chart.Id <= 0)
             {
+                chart.DateCreated = DateTime.Now;
+                chart.DateUpdated = DateTime.Now;
                 await connection.InsertAsync(chart);
             }
             else
             {
+                chart.DateUpdated = DateTime.Now;
                 await connection.UpdateAsync(chart);
             }
 
@@ -613,6 +616,8 @@ public class RoLRepositoryHelper : IRoLRepositoryHelper
         var exist = await connection.Table<ChartGoal>().FirstOrDefaultAsync(x => x.Id == goalId);
         if (exist is not null)
         {
+            await connection.ExecuteAsync("DELETE ChartPractice WHERE GoalId=@goalId", new { goalId = exist.Id });
+
             await connection.DeleteAsync(exist);
         }
     }

@@ -1,11 +1,18 @@
 ﻿<div class="hero-banner">
     <div class="hero-banner-heading">
+    @if (activeChart is not null)
+    {
+        <div class="text-lg text-white">@activeChart.Title</div>
+        <div class="text-white">@activeChart.Description</div>
+    }
+    </div>
+    <div class="hero-banner-heading">
     @if (todaysVerse != null)
     {
-        <div class="@colorContrast" style="padding: 0 50px;">
+        <div class="@colorContrast">
             <h5>@todaysVerse.Text</h5>
         </div>
-        <div class="@colorContrast" style="padding: 0 50px;">
+        <div class="@colorContrast">
             <p><strong>@todaysVerse.VerseId</strong> <span>@todaysVerse.BibleId</span></p>
         </div>
     }
