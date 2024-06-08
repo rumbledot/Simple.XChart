@@ -30,6 +30,8 @@ builder.Services.AddScoped(p =>
 //var databaseFile = Path.Combine(Directory.GetCurrentDirectory(), connectionSettings.SqliteConnection);
 //var connectionString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "RoLDB.db");
 
+//builder.Services.AddHttpClient<VerseService>(c => c.BaseAddress = new Uri(apiSettings.ApiUrls.Verse));
+
 var verseService = new VerseService(new HttpClient { BaseAddress = new Uri(apiSettings.ApiUrls.Verse) });
 var pexelsService = new PexelsService(apiSettings.ApiKeys.Pexels);
 var database = new RoLRepositoryHelper(connectionSettings.SqliteConnection, pexelsService, verseService);
